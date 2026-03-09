@@ -223,3 +223,73 @@ export async function getCurrentUser(req, res) {
     });
   }
 }
+
+/* -------- Update Profile -------- */
+export async function updateProfile(req, res) {
+  try {
+    const { name, email } = req.body;
+
+    // if (!name || !email || !validator.isEmail(email)) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Name and a valid email are required.",
+    //   });
+    // }
+
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is required.",
+      });
+    }
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required.",
+      });
+    }
+
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid email address.",
+      });
+    }
+
+    const exists = await userModel.findOne({
+      email,
+      _id: { $ne: req.user.id },
+    });
+
+    if (exists) {
+      return res.status(409).json({
+        success: false,
+        message: "Email is already in use by another account.",
+      });
+    }
+
+    const user = await userModel.findByIdAndUpdate(
+      req.user.id,
+      { name, email },
+      { new: true, runValidators: true, select: "name email" },
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully.",
+      user,
+    });
+  } catch (error) {
+    console.error(
+      "Update Profile Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while updating the profile.",
+      error: `Update Profile Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
