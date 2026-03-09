@@ -1,6 +1,7 @@
 // Server / routes / userRouter.js
 import express from "express";
 import {
+  changePassword,
   getCurrentUser,
   loginUser,
   registerUser,
@@ -14,5 +15,6 @@ userRouter.post("/register", registerUser);
 userRouter.post("/login", loginUser);
 userRouter.get("/profile", authMiddleware, getCurrentUser);
 userRouter.put("/profile", authMiddleware, updateProfile);
+userRouter.put("/password", authMiddleware, changePassword);
 
 export default userRouter;
