@@ -132,3 +132,63 @@ export async function getIncomeById(req, res) {
     });
   }
 }
+
+/* -------- Update Income -------- */
+export async function updateIncome(req, res) {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+    const { description, amount } = req.body;
+
+    // if (!description || !amount) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Both description and amount are required to update income.",
+    //   });
+    // }
+
+    if (!description) {
+      return res.status(400).json({
+        success: false,
+        message: "Income description is required.",
+      });
+    }
+
+    if (!amount) {
+      return res.status(400).json({
+        success: false,
+        message: "Income amount is required.",
+      });
+    }
+
+    const updatedIncome = await incomeModel.findOneAndUpdate(
+      { _id: id, userId },
+      { description, amount },
+      { new: true },
+    );
+
+    if (!updatedIncome) {
+      return res.status(404).json({
+        success: false,
+        message: "Income with the specified ID was not found for this user.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Income updated successfully.",
+      data: updatedIncome,
+    });
+  } catch (error) {
+    console.error(
+      "Update Incomes Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while updating the income.",
+      error: `Update Incomes Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
