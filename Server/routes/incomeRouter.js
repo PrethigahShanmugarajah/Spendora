@@ -3,6 +3,7 @@ import express from "express";
 import { authMiddleware } from "../middlewares/auth.js";
 import {
   addIncome,
+  deleteIncome,
   getIncomeById,
   getIncomes,
   updateIncome,
@@ -14,5 +15,6 @@ incomeRouter.post("/add", authMiddleware, addIncome);
 incomeRouter.get("/get", authMiddleware, getIncomes);
 incomeRouter.get("/get/:id", authMiddleware, getIncomeById);
 incomeRouter.put("/update/:id", authMiddleware, updateIncome);
+incomeRouter.delete("/delete/:id", authMiddleware, deleteIncome);
 
 export default incomeRouter;
