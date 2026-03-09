@@ -1,8 +1,7 @@
 // Server / controllers / incomeController.js
 import incomeModel from "../models/incomeModel.js";
 import XLSX from "xlsx";
-import fs from "fs";
-import path from "path";
+import getDateRange from "../utils/dateFilter.js";
 
 /* -------- Add Income -------- */
 export async function addIncome(req, res) {
@@ -288,6 +287,73 @@ export async function downloadIncomeExcel(req, res) {
       success: false,
       message: "An unexpected error occurred while generating the Excel file.",
       error: `Download the data in an excel sheet Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
+
+/* -------- Get Income Overview -------- */
+export async function getIncomeOverview(req, res) {
+  try {
+    const userId = req.user._id;
+    const { range = "monthly" } = req.query;
+    const { start, end } = getDateRange(range);
+
+    const incomes = await incomeModel
+      .find({
+        userId,
+        date: { $gte: start, $lte: end },
+      })
+      .sort({ date: -1 });
+
+    const totalIncome = incomes.reduce((acc, cur) => acc + cur.amount, 0);
+    const averageIncome = incomes.length > 0 ? totalIncome / incomes.length : 0;
+    const numberOfTransactions = incomes.length;
+    const recentTransactions = incomes.slice(0, 9);
+
+    let rangeText = "";
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    if (range === "daily") {
+      rangeText = start.toLocaleDateString("en-US", options);
+    } else if (range === "weekly") {
+      rangeText = `${start.toLocaleDateString("en-US", options)} - ${end.toLocaleDateString(
+        "en-US",
+        options,
+      )}`;
+    } else if (range === "monthly") {
+      rangeText = start.toLocaleString("en-US", {
+        month: "long",
+        year: "numeric",
+      });
+    } else if (range === "yearly") {
+      rangeText = start.getFullYear();
+    } else {
+      rangeText = `${start.toDateString()} - ${end.toDateString()}`;
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: incomes.length
+        ? `Income overview for ${rangeText} fetched successfully.`
+        : `No income transactions found for ${rangeText}.`,
+      data: {
+        totalIncome,
+        averageIncome,
+        numberOfTransactions,
+        recentTransactions,
+        range,
+      },
+    });
+  } catch (error) {
+    console.error(
+      "Get Income Overview Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "An unexpected error occurred while fetching the income overview.",
+      error: `Get Income Overview Error: ${error?.stack || error?.message || error}`,
     });
   }
 }
