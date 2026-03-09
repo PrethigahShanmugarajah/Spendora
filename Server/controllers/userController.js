@@ -192,3 +192,34 @@ export async function loginUser(req, res) {
     });
   }
 }
+
+/* -------- Get Current User -------- */
+export async function getCurrentUser(req, res) {
+  try {
+    const user = await userModel.findById(req.user.id).select("name email");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Current user fetched successfully.",
+      user,
+    });
+  } catch (error) {
+    console.error(
+      "Get Current User Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while fetching the current user.",
+      error: `Get Current User Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
