@@ -68,3 +68,30 @@ export async function addIncome(req, res) {
     });
   }
 }
+
+/* -------- Get Incomes -------- */
+export async function getIncomes(req, res) {
+  try {
+    const userId = req.user._id;
+    const incomes = await incomeModel.find({ userId }).sort({ date: -1 });
+    return res.status(200).json({
+      success: true,
+      message: incomes.length
+        ? "Incomes fetched successfully."
+        : "No incomes found yet.",
+      incomes,
+      length: incomes.length,
+    });
+  } catch (error) {
+    console.error(
+      "Get Incomes Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while fetching incomes.",
+      error: `Get Incomes Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
