@@ -4,6 +4,7 @@ import { authMiddleware } from "../middlewares/auth.js";
 import {
   addIncome,
   deleteIncome,
+  downloadIncomeExcel,
   getIncomeById,
   getIncomes,
   updateIncome,
@@ -16,5 +17,6 @@ incomeRouter.get("/get", authMiddleware, getIncomes);
 incomeRouter.get("/get/:id", authMiddleware, getIncomeById);
 incomeRouter.put("/update/:id", authMiddleware, updateIncome);
 incomeRouter.delete("/delete/:id", authMiddleware, deleteIncome);
+incomeRouter.get("/download", authMiddleware, downloadIncomeExcel);
 
 export default incomeRouter;
