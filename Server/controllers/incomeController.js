@@ -259,27 +259,25 @@ export async function downloadIncomeExcel(req, res) {
     // XLSX.writeFile(workbook, "income_details.xlsx");
     // res.download("income_details.xlsx");
 
-    const tempDir = path.join(process.cwd(), "temp");
-    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
-
-    const baseFileName = "Income_Details";
-    let fileName = `${baseFileName}.xlsx`;
-    let counter = 1;
-
-    while (fs.existsSync(path.join(tempDir, fileName))) {
-      fileName = `${baseFileName}(${counter}).xlsx`;
-      counter++;
-    }
-
-    const filePath = path.join(tempDir, fileName);
-    XLSX.writeFile(workbook, filePath);
-
-    res.download(filePath, fileName, (error) => {
-      if (error) console.error("Error sending file:", error);
+    const excelBuffer = XLSX.write(workbook, {
+      type: "buffer",
+      bookType: "xlsx",
     });
 
+    const baseFileName = "Income_Details";
+    const counter = Number.parseInt(req.query.counter, 10) || 0;
+    const fileName =
+      counter > 0 ? `${baseFileName}(${counter}).xlsx` : `${baseFileName}.xlsx`;
+
+    res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
     res.setHeader("X-Success", "true");
     res.setHeader("X-Message", "Excel generated successfully");
+
+    return res.status(200).send(excelBuffer);
   } catch (error) {
     console.error(
       "Download the data in an excel sheet Error:",
