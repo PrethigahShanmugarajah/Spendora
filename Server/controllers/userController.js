@@ -201,7 +201,7 @@ export async function getCurrentUser(req, res) {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found.",
+        message: "Authenticated user not found.",
       });
     }
 
@@ -290,6 +290,76 @@ export async function updateProfile(req, res) {
       success: false,
       message: "An unexpected error occurred while updating the profile.",
       error: `Update Profile Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
+
+/* -------- Change Password -------- */
+export async function changePassword(req, res) {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    // if (!currentPassword || !newPassword || newPassword.length < 8) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message:
+    //       "Both current and new passwords are required. New password must be at least 8 characters long.",
+    //   });
+    // }
+
+    if (!currentPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Current password is required.",
+      });
+    }
+
+    if (!newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password is required.",
+      });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "New password must be at least 8 characters long.",
+      });
+    }
+
+    const user = await userModel.findById(req.user.id).select("password");
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Authenticated user not found.",
+      });
+    }
+
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) {
+      return res.status(401).json({
+        success: false,
+        message: "Current password is incorrect.",
+      });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully.",
+    });
+  } catch (error) {
+    console.error(
+      "Change Password Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while changing the password.",
+      error: `Change Password Error: ${error?.stack || error?.message || error}`,
     });
   }
 }
