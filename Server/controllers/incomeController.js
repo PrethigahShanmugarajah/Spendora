@@ -1,5 +1,8 @@
 // Server / controllers / incomeController.js
 import incomeModel from "../models/incomeModel.js";
+import XLSX from "xlsx";
+import fs from "fs";
+import path from "path";
 
 /* -------- Add Income -------- */
 export async function addIncome(req, res) {
@@ -225,6 +228,68 @@ export async function deleteIncome(req, res) {
       success: false,
       message: "An unexpected error occurred while deleting the income.",
       error: `Delete Income Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
+
+/* -------- Download the data in an excel sheet -------- */
+export async function downloadIncomeExcel(req, res) {
+  try {
+    const userId = req.user._id;
+    const incomes = await incomeModel.find({ userId }).sort({ date: -1 });
+
+    if (!incomes.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No income data found to download.",
+      });
+    }
+
+    const plainData = incomes.map((inc) => ({
+      Description: inc.description,
+      Amount: inc.amount,
+      Category: inc.category,
+      Date: new Date(inc.date).toLocaleDateString(),
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(plainData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "IncomeData");
+
+    // XLSX.writeFile(workbook, "income_details.xlsx");
+    // res.download("income_details.xlsx");
+
+    const tempDir = path.join(process.cwd(), "temp");
+    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
+
+    const baseFileName = "Income_Details";
+    let fileName = `${baseFileName}.xlsx`;
+    let counter = 1;
+
+    while (fs.existsSync(path.join(tempDir, fileName))) {
+      fileName = `${baseFileName}(${counter}).xlsx`;
+      counter++;
+    }
+
+    const filePath = path.join(tempDir, fileName);
+    XLSX.writeFile(workbook, filePath);
+
+    res.download(filePath, fileName, (error) => {
+      if (error) console.error("Error sending file:", error);
+    });
+
+    res.setHeader("X-Success", "true");
+    res.setHeader("X-Message", "Excel generated successfully");
+  } catch (error) {
+    console.error(
+      "Download the data in an excel sheet Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while generating the Excel file.",
+      error: `Download the data in an excel sheet Error: ${error?.stack || error?.message || error}`,
     });
   }
 }
