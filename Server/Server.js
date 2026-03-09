@@ -4,6 +4,7 @@ import "dotenv/config";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import userRouter from "./routes/userRouter.js";
+import incomeRouter from "./routes/incomeRouter.js";
 
 /* -------- INITIALIZE EXPRESS -------- */
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 /* -------- ROUTES -------- */
 app.get("/", (req, res) => res.send("API is Working!"));
 app.use("/api/user", userRouter);
+app.use("/api/income", incomeRouter);
 
 /* -------- PORT -------- */
 const port = process.env.PORT || 4000;
