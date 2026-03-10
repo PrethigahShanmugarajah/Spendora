@@ -3,6 +3,7 @@ import express from "express";
 import { authMiddleware } from "../middlewares/auth.js";
 import {
   addExpense,
+  deleteExpense,
   getExpenseById,
   getExpenses,
   updateExpense,
@@ -14,5 +15,6 @@ expenseRouter.post("/add", authMiddleware, addExpense);
 expenseRouter.get("/get", authMiddleware, getExpenses);
 expenseRouter.get("/get/:id", authMiddleware, getExpenseById);
 expenseRouter.put("/update/:id", authMiddleware, updateExpense);
+expenseRouter.delete("/delete/:id", authMiddleware, deleteExpense);
 
 export default expenseRouter;
