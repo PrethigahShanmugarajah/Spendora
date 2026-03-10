@@ -140,3 +140,63 @@ export async function getExpenseById(req, res) {
     });
   }
 }
+
+/* -------- Update Expense -------- */
+export async function updateExpense(req, res) {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+    const { description, amount } = req.body;
+
+    // if (!description || !amount) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Both description and amount are required to update expense.",
+    //   });
+    // }
+
+    if (!description) {
+      return res.status(400).json({
+        success: false,
+        message: "Expense description is required.",
+      });
+    }
+
+    if (!amount) {
+      return res.status(400).json({
+        success: false,
+        message: "Expense amount is required.",
+      });
+    }
+
+    const updatedExpense = await expenseModel.findOneAndUpdate(
+      { _id: id, userId },
+      { description, amount },
+      { new: true },
+    );
+
+    if (!updatedExpense) {
+      return res.status(404).json({
+        success: false,
+        message: "Expense with the specified ID was not found for this user.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Expense updated successfully.",
+      data: updatedExpense,
+    });
+  } catch (error) {
+    console.error(
+      "Update Expenses Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while updating the expense.",
+      error: `Update Expenses Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
