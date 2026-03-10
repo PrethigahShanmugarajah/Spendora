@@ -1,5 +1,6 @@
 // Server / controllers / expenseController.js
 import expenseModel from "../models/expenseModel.js";
+import XLSX from "xlsx";
 
 /* -------- Add Expense -------- */
 export async function addExpense(req, res) {
@@ -234,6 +235,66 @@ export async function deleteExpense(req, res) {
       success: false,
       message: "An unexpected error occurred while deleting the expense.",
       error: `Delete Expense Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
+
+/* -------- Download the data in an excel sheet -------- */
+export async function downloadExpenseExcel(req, res) {
+  try {
+    const userId = req.user._id;
+    const expenses = await expenseModel.find({ userId }).sort({ date: -1 });
+
+    if (!expenses.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No expense data found to download.",
+      });
+    }
+
+    const plainData = expenses.map((inc) => ({
+      Description: inc.description,
+      Amount: inc.amount,
+      Category: inc.category,
+      Date: new Date(inc.date).toLocaleDateString(),
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(plainData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "ExpenseData");
+
+    // XLSX.writeFile(workbook, "expense_details.xlsx");
+    // res.download("expense_details.xlsx");
+
+    const excelBuffer = XLSX.write(workbook, {
+      type: "buffer",
+      bookType: "xlsx",
+    });
+
+    const baseFileName = "Expense_Details";
+    const counter = Number.parseInt(req.query.counter, 10) || 0;
+    const fileName =
+      counter > 0 ? `${baseFileName}(${counter}).xlsx` : `${baseFileName}.xlsx`;
+
+    res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
+    res.setHeader("X-Success", "true");
+    res.setHeader("X-Message", "Excel generated successfully");
+
+    return res.status(200).send(excelBuffer);
+  } catch (error) {
+    console.error(
+      "Download the data in an excel sheet Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while generating the Excel file.",
+      error: `Download the data in an excel sheet Error: ${error?.stack || error?.message || error}`,
     });
   }
 }
