@@ -99,3 +99,44 @@ export async function getExpenses(req, res) {
     });
   }
 }
+
+/* -------- Get Expense -------- */
+export async function getExpenseById(req, res) {
+  try {
+    const userId = req.user._id;
+    const expenseId = req.params.id;
+
+    if (!expenseId) {
+      return res.status(400).json({
+        success: false,
+        message: "Expense ID is required.",
+      });
+    }
+
+    const expense = await expenseModel.findOne({ _id: expenseId, userId });
+    if (!expense) {
+      return res.status(404).json({
+        success: false,
+        message: "Expense not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Expense fetched successfully.",
+      expense,
+    });
+  } catch (error) {
+    console.error(
+      "Get Expense Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "An unexpected error occurred while fetching the expense details.",
+      error: `Get Expense Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
