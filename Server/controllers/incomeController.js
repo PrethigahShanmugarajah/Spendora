@@ -76,6 +76,7 @@ export async function getIncomes(req, res) {
   try {
     const userId = req.user._id;
     const incomes = await incomeModel.find({ userId }).sort({ date: -1 });
+
     return res.status(200).json({
       success: true,
       message: incomes.length
@@ -129,7 +130,8 @@ export async function getIncomeById(req, res) {
 
     return res.status(500).json({
       success: false,
-      message: "An unexpected error occurred while fetching the income.",
+      message:
+        "An unexpected error occurred while fetching the income details.",
       error: `Get Income Error: ${error?.stack || error?.message || error}`,
     });
   }
