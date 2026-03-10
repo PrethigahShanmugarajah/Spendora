@@ -1,6 +1,7 @@
 // Server / controllers / expenseController.js
 import expenseModel from "../models/expenseModel.js";
 import XLSX from "xlsx";
+import getDateRange from "../utils/dateFilter.js";
 
 /* -------- Add Expense -------- */
 export async function addExpense(req, res) {
@@ -295,6 +296,74 @@ export async function downloadExpenseExcel(req, res) {
       success: false,
       message: "An unexpected error occurred while generating the Excel file.",
       error: `Download the data in an excel sheet Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
+
+/* -------- Get Expense Overview -------- */
+export async function getExpenseOverview(req, res) {
+  try {
+    const userId = req.user._id;
+    const { range = "monthly" } = req.query;
+    const { start, end } = getDateRange(range);
+
+    const expenses = await expenseModel
+      .find({
+        userId,
+        date: { $gte: start, $lte: end },
+      })
+      .sort({ date: -1 });
+
+    const totalExpense = expenses.reduce((acc, cur) => acc + cur.amount, 0);
+    const averageExpense =
+      expenses.length > 0 ? totalExpense / expenses.length : 0;
+    const numberOfTransactions = expenses.length;
+    const recentTransactions = expenses.slice(0, 9);
+
+    let rangeText = "";
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    if (range === "daily") {
+      rangeText = start.toLocaleDateString("en-US", options);
+    } else if (range === "weekly") {
+      rangeText = `${start.toLocaleDateString("en-US", options)} - ${end.toLocaleDateString(
+        "en-US",
+        options,
+      )}`;
+    } else if (range === "monthly") {
+      rangeText = start.toLocaleString("en-US", {
+        month: "long",
+        year: "numeric",
+      });
+    } else if (range === "yearly") {
+      rangeText = start.getFullYear();
+    } else {
+      rangeText = `${start.toDateString()} - ${end.toDateString()}`;
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: expenses.length
+        ? `Expense overview for ${rangeText} fetched successfully.`
+        : `No expense transactions found for ${rangeText}.`,
+      data: {
+        totalExpense,
+        averageExpense,
+        numberOfTransactions,
+        recentTransactions,
+        range,
+      },
+    });
+  } catch (error) {
+    console.error(
+      "Get Expense Overview Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "An unexpected error occurred while fetching the expense overview.",
+      error: `Get Expense Overview Error: ${error?.stack || error?.message || error}`,
     });
   }
 }
