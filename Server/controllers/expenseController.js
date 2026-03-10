@@ -71,3 +71,31 @@ export async function addExpense(req, res) {
     });
   }
 }
+
+/* -------- Get Expenses -------- */
+export async function getExpenses(req, res) {
+  try {
+    const userId = req.user._id;
+    const expenses = await expenseModel.find({ userId }).sort({ date: -1 });
+
+    return res.status(200).json({
+      success: true,
+      message: expenses.length
+        ? "Expenses fetched successfully."
+        : "No expenses found yet.",
+      expenses,
+      length: expenses.length,
+    });
+  } catch (error) {
+    console.error(
+      "Get Expenses Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while fetching expenses.",
+      error: `Get Expenses Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
