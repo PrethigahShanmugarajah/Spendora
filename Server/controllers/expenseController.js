@@ -200,3 +200,40 @@ export async function updateExpense(req, res) {
     });
   }
 }
+
+/* -------- Delete Expense -------- */
+export async function deleteExpense(req, res) {
+  try {
+    const userId = req.user._id;
+    const expenseId = req.params.id;
+
+    const expense = await expenseModel.findOneAndDelete({
+      _id: expenseId,
+      userId,
+    });
+
+    if (!expense) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Expense not found or you do not have permission to delete it.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Expense deleted successfully.",
+    });
+  } catch (error) {
+    console.error(
+      "Delete Expense Error:",
+      error?.stack || error?.message || error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while deleting the expense.",
+      error: `Delete Expense Error: ${error?.stack || error?.message || error}`,
+    });
+  }
+}
