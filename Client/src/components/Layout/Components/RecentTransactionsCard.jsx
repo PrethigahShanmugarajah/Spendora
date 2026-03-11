@@ -1,0 +1,157 @@
+// Client / src / components / Layout / Components / RecentTransactionsCard.jsx
+import {
+  Activity,
+  ArrowUp,
+  Car,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  CreditCard,
+  DollarSign,
+  Gift,
+  Home,
+  Info,
+  PiggyBank,
+  RefreshCcw,
+  ShoppingCart,
+  Utensils,
+  Zap,
+} from "lucide-react";
+import SpendingByCategoryCard from "./SpendingByCategoryCard.JSX";
+
+const CATEGORY_ICONS = {
+  Food: <Utensils className="w-4 h-4" />,
+  Housing: <Home className="w-4 h-4" />,
+  Transport: <Car className="w-4 h-4" />,
+  Shopping: <ShoppingCart className="w-4 h-4" />,
+  Entertainment: <Gift className="w-4 h-4" />,
+  Utilities: <Zap className="w-4 h-4" />,
+  Healthcare: <Activity className="w-4 h-4" />,
+  Salary: <ArrowUp className="w-4 h-4" />,
+  Freelance: <CreditCard className="w-4 h-4" />,
+  Savings: <PiggyBank className="w-4 h-4" />,
+};
+
+const RecentTransactionsCard = ({
+  loading,
+  fetchTransactions,
+  displayedTransactions,
+  transactions,
+  showAllTransactions,
+  setShowAllTransactions,
+  topCategories,
+  stats,
+}) => {
+  return (
+    <div className="lg:col-span-1 lg:-mx-3 space-y-6">
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-md md:text-xl lg:text-xl xl:text-xl font-bold text-gray-800 flex items-center gap-3">
+            <Clock className="w-6 h-6 text-teal-500" />
+            Recent Transactions
+          </h3>
+
+          <button
+            onClick={fetchTransactions}
+            disabled={loading}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <RefreshCcw
+              className={`w-5 h-5 text-gray-500 ${
+                loading ? "animate-spin" : ""
+              }`}
+            />
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 text-xs text-gray-500 mb-4 bg-indigo-50 p-2 rounded-lg">
+          <Info className="w-4 h-4 text-indigo-500" />
+          <span>Transactions are stacked by date(newest first)</span>
+        </div>
+
+        <div className="space-y-4 max-h-125 -mx-5 overflow-y-auto pr-2">
+          {displayedTransactions.map((transaction) => {
+            const { id, type, category, description, date, amount } =
+              transaction;
+            return (
+              <div
+                key={id}
+                className="flex items-center lg:flex-col xl:flex-row md:flex-row justify-between p-1 mx-0 lg:p-4 md:p-4 hover:bg-gray-50 rounded-xl transition-all duration-300 border border-gray-100"
+              >
+                <div className="flex items-center gap-1 md:gap-4 lg:gap-4">
+                  <div
+                    className={`p-2 rounded-lg ${
+                      type === "income"
+                        ? "bg-purple-100 text-purple-600"
+                        : "bg-amber-100 text-amber-600"
+                    }`}
+                  >
+                    {CATEGORY_ICONS[category] || (
+                      <DollarSign className="w-4 h-4" />
+                    )}
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="font-medium text-gray-800 truncate max-w-30">
+                      {description}
+                    </p>
+
+                    <p className="text-xs text-gray-500 mt-1">
+                      {new Date(date).toLocaleDateString()}
+                      <span className="ml-2 capitalize">{category}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <span
+                  className={
+                    type === "income" ? "text-purple-600" : "text-amber-600"
+                  }
+                >
+                  {type === "income" ? "+" : "-"} {CURRENCY} {Number(amount)}
+                </span>
+              </div>
+            );
+          })}
+
+          {transactions.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-teal-100 flex items-center justify-center">
+                <Clock className="w-8 h-8 text-teal-500" />
+              </div>
+              <p className="text-gray-600 font-medium">
+                No recent transactions
+              </p>
+            </div>
+          ) : (
+            <div className="pt-4 border-t border-gray-100">
+              <button
+                onClick={() => setShowAllTransactions(!showAllTransactions)}
+                className="w-full flex items-center justify-center gap-2 py-3 text-purple-600 font-medium hover:bg-purple-50 rounded-xl transition-colors"
+              >
+                {showAllTransactions ? (
+                  <>
+                    <ChevronUp className="w-5 h-5" /> Show Less
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-5 h-5" /> View All Transactions(
+                    {transactions.length})
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+        </div>
+
+        <SpendingByCategoryCard
+          topCategories={topCategories}
+          stats={stats}
+          CATEGORY_ICONS={CATEGORY_ICONS}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default RecentTransactionsCard;
