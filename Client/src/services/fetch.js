@@ -10,7 +10,7 @@ export const fetchCurrentUser = async () => {
     console.log("Fetch Current User API Response:", data);
 
     if (data?.success) {
-      toast.success(data?.message);
+      // toast.success(data?.message);
       console.log("Fetch Current User Success:", data?.message);
     } else {
       toast.warn(data?.message || "Fetch current user with warning");
@@ -24,6 +24,58 @@ export const fetchCurrentUser = async () => {
   } catch (error) {
     toast.error(error?.response?.data?.message || error?.message);
     console.error("Fetch Current User Error:", error);
+
+    throw error;
+  }
+};
+
+/* -------- Fetch Income -------- */
+export const fetchIncome = async () => {
+  try {
+    const { data } = await api.get(API_ROUTES.INCOME.GET);
+    console.log("Fetch Income API Response:", data);
+
+    if (data?.success) {
+      // toast.success(data?.message);
+      console.log("Fetch Income Success:", data?.message);
+    } else {
+      toast.warn(data?.message || "Fetch income with warning");
+      console.warn(
+        "Fetch Income Warning:",
+        data?.message || "Fetch Income warning",
+      );
+    }
+
+    return data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error?.message);
+    console.error("Fetch Income Error:", error);
+
+    throw error;
+  }
+};
+
+/* -------- Fetch Expense -------- */
+export const fetchExpense = async () => {
+  try {
+    const { data } = await api.get(API_ROUTES.EXPENSE.GET);
+    console.log("Fetch Expense API Response:", data);
+
+    if (data?.success) {
+      // toast.success(data?.message);
+      console.log("Fetch Expense Success:", data?.message);
+    } else {
+      toast.warn(data?.message || "Fetch expense with warning");
+      console.warn(
+        "Fetch Expense Warning:",
+        data?.message || "Fetch Expense warning",
+      );
+    }
+
+    return data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error?.message);
+    console.error("Fetch Expense Error:", error);
 
     throw error;
   }
