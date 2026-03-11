@@ -5,6 +5,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowDown,
   ArrowUp,
+  ChevronLeft,
+  ChevronRight,
   HelpCircle,
   Home,
   LogOut,
@@ -116,21 +118,11 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
               animate={{ rotate: isCollapsed ? 0 : 180 }}
               transition={{ duration: 0.3 }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline
-                  points={isCollapsed ? "9 18 15 12 9 6" : "15 18 9 12 15 6"}
-                ></polyline>
-              </svg>
+              {isCollapsed ? (
+                <ChevronRight size={16} />
+              ) : (
+                <ChevronLeft size={16} />
+              )}
             </motion.div>
           </button>
 
