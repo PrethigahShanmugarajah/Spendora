@@ -1,7 +1,5 @@
 // Client / src / utils / loginUtils.js
 
-// Client / src / utils / loginUtils.js
-
 /* -------- Get storage from remember me -------- */
 export const getAuthStorage = (rememberMe) => {
   return rememberMe ? localStorage : sessionStorage;
