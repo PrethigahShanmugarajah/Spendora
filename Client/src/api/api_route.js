@@ -5,6 +5,18 @@ const API_ROUTES = {
   USER: {
     PROFILE: `${BASE_URL}/api/user/profile`,
   },
+  INCOME: {
+    GET: `${BASE_URL}/api/income/get`,
+    ADD: `${BASE_URL}/api/income/add`,
+    UPDATE: (id) => `${BASE_URL}/api/income/update/${id}`,
+    DELETE: (id) => `${BASE_URL}/api/income/delete/${id}`,
+  },
+  EXPENSE: {
+    GET: `${BASE_URL}/api/expense/get`,
+    ADD: `${BASE_URL}/api/expense/add`,
+    UPDATE: (id) => `${BASE_URL}/api/expense/update/${id}`,
+    DELETE: (id) => `${BASE_URL}/api/expense/delete/${id}`,
+  },
 };
 
 export default API_ROUTES;
