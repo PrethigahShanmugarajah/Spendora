@@ -184,3 +184,29 @@ export const userLogin = async (payload) => {
     throw error;
   }
 };
+
+/* -------- User Signup -------- */
+export const userSignup = async (payload) => {
+  try {
+    const { data } = await api.post(API_ROUTES.USER.REGISTER, payload);
+    console.log("User Signup API Response:", data);
+
+    if (data?.success) {
+      toast.success(data?.message);
+      console.log("User Signup Success:", data?.message);
+    } else {
+      toast.warn(data?.message || "User signup with warning");
+      console.warn(
+        "User Signup Warning:",
+        data?.message || "User Signup warning",
+      );
+    }
+
+    return data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error?.message);
+    console.error("User Signup Error:", error);
+
+    throw error;
+  }
+};
