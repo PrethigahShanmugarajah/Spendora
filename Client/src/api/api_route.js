@@ -4,6 +4,7 @@ const BASE_URL = import.meta.env.VITE_BASEURL;
 const API_ROUTES = {
   USER: {
     PROFILE: `${BASE_URL}/api/user/profile`,
+    LOGIN: `${BASE_URL}/api/user/login`,
   },
   INCOME: {
     GET: `${BASE_URL}/api/income/get`,
