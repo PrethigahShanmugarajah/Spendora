@@ -158,3 +158,29 @@ export const deleteExpense = async (id) => {
     throw error;
   }
 };
+
+/* -------- User Login -------- */
+export const userLogin = async (payload) => {
+  try {
+    const { data } = await api.post(API_ROUTES.USER.LOGIN, payload);
+    console.log("User Login API Response:", data);
+
+    if (data?.success) {
+      toast.success(data?.message);
+      console.log("User Login Success:", data?.message);
+    } else {
+      toast.warn(data?.message || "User login with warning");
+      console.warn(
+        "User Login Warning:",
+        data?.message || "User Login warning",
+      );
+    }
+
+    return data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error?.message);
+    console.error("User Login Error:", error);
+
+    throw error;
+  }
+};
