@@ -18,6 +18,7 @@ import {
   Zap,
 } from "lucide-react";
 import SpendingByCategoryCard from "./SpendingByCategoryCard.JSX";
+import { CURRENCY } from "../../../utils/helpers";
 
 const CATEGORY_ICONS = {
   Food: <Utensils className="w-4 h-4" />,
