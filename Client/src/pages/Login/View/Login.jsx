@@ -1,6 +1,6 @@
 // Client / src / pages / Login / View / Login.jsx
 import { useState } from "react";
-import { AlertCircle, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import { InputField } from "../../../components/FormField/InputField";
@@ -63,13 +63,6 @@ const Login = ({ onLogin }) => {
         </div>
 
         <div className="p-8">
-          {error && (
-            <div className="mb-6 p-3 bg-rose-50 text-rose-700 rounded-lg flex items-center">
-              <AlertCircle className="w-4 h-4 text-rose-600" />
-              <span className="ml-3 wrap-break-words">{error}</span>
-            </div>
-          )}
-
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
               <div className="relative">
@@ -133,8 +126,6 @@ const Login = ({ onLogin }) => {
                 size="m"
                 value={rememberMe}
                 onChange={(checked) => setRememberMe(checked)}
-                labelClassName="text-sm text-gray-700"
-                checkboxClassName="border-gray-300 text-purple-600 focus:ring-purple-500"
               />
             </div>
 
