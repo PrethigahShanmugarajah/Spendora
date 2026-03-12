@@ -36,6 +36,7 @@ export const InputField = ({
   labelClassName = "",
   errorClassName = "",
   unstyled = false,
+  variant = "purple",
   value,
   onChange,
   onBlur,
@@ -88,7 +89,12 @@ export const InputField = ({
 
   const s = getSize(resolvedSize);
 
-  const baseInput = `rounded-full border border-purple-100 bg-white shadow-sm w-full focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-100 ${s.py} ${s.px} ${s.text}`;
+  const variantClasses =
+    variant === "amber"
+      ? "border-amber-100 focus:border-amber-400 focus:ring-1 focus:ring-amber-100"
+      : "border-purple-100 focus:border-purple-400 focus:ring-1 focus:ring-purple-100";
+
+  const baseInput = `rounded-full border bg-white shadow-sm w-full focus:outline-none ${variantClasses} ${s.py} ${s.px} ${s.text}`;
   const unstyledInput =
     "w-full bg-transparent p-0 border-0 shadow-none rounded-none outline-none focus:outline-none focus:ring-0";
 
