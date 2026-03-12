@@ -80,3 +80,29 @@ export const fetchExpense = async () => {
     throw error;
   }
 };
+
+/* -------- Fetch Dashboard Overview -------- */
+export const fetchDashboardOverview = async () => {
+  try {
+    const { data } = await api.get(API_ROUTES.DASHBOARD.OVERVIEW);
+    console.log("Fetch Dashboard Overview API Response:", data);
+
+    if (data?.success) {
+      // toast.success(data?.message);
+      console.log("Fetch Dashboard Overview Success:", data?.message);
+    } else {
+      toast.warn(data?.message || "Fetch dashboard overview with warning");
+      console.warn(
+        "Fetch Dashboard Overview Warning:",
+        data?.message || "Fetch Dashboard Overview warning",
+      );
+    }
+
+    return data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error?.message);
+    console.error("Fetch Dashboard Overview Error:", error);
+
+    throw error;
+  }
+};
