@@ -19,6 +19,9 @@ const API_ROUTES = {
     UPDATE: (id) => `${BASE_URL}/api/expense/update/${id}`,
     DELETE: (id) => `${BASE_URL}/api/expense/delete/${id}`,
   },
+  DASHBOARD: {
+    OVERVIEW: `${BASE_URL}/api/dashboard/overview`,
+  },
 };
 
 export default API_ROUTES;
