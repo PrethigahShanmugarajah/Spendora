@@ -6,7 +6,7 @@ import api from "../api/axios";
 /* -------- Add Income -------- */
 export const addIncome = async (payload) => {
   try {
-    const { data } = await api.post(API_ROUTES.EXPENSE.ADD, payload);
+    const { data } = await api.post(API_ROUTES.INCOME.ADD, payload);
     console.log("Add Income API Response:", data);
 
     if (data?.success) {
