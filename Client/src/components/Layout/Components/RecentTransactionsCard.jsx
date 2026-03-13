@@ -1,37 +1,18 @@
 // Client / src / components / Layout / Components / RecentTransactionsCard.jsx
 import {
-  Activity,
-  ArrowUp,
-  Car,
+  Banknote,
   ChevronDown,
   ChevronUp,
   Clock,
-  CreditCard,
-  DollarSign,
-  Gift,
-  Home,
   Info,
-  PiggyBank,
   RefreshCcw,
-  ShoppingCart,
-  Utensils,
-  Zap,
 } from "lucide-react";
-import SpendingByCategoryCard from "./SpendingByCategoryCard.JSX";
+import SpendingByCategoryCard from "./SpendingByCategoryCard.jsx";
 import { CURRENCY } from "../../../utils/helpers";
-
-const CATEGORY_ICONS = {
-  Food: <Utensils className="w-4 h-4" />,
-  Housing: <Home className="w-4 h-4" />,
-  Transport: <Car className="w-4 h-4" />,
-  Shopping: <ShoppingCart className="w-4 h-4" />,
-  Entertainment: <Gift className="w-4 h-4" />,
-  Utilities: <Zap className="w-4 h-4" />,
-  Healthcare: <Activity className="w-4 h-4" />,
-  Salary: <ArrowUp className="w-4 h-4" />,
-  Freelance: <CreditCard className="w-4 h-4" />,
-  Savings: <PiggyBank className="w-4 h-4" />,
-};
+import {
+  EXPENSE_CATEGORY_ICONS,
+  INCOME_CATEGORY_ICONS,
+} from "../../../constants/theme.jsx";
 
 const RecentTransactionsCard = ({
   loading,
@@ -83,13 +64,17 @@ const RecentTransactionsCard = ({
                   <div
                     className={`p-2 rounded-lg ${
                       type === "income"
-                        ? "bg-purple-100 text-purple-600"
+                        ? "bg-emerald-100 text-emerald-600"
                         : "bg-amber-100 text-amber-600"
                     }`}
                   >
-                    {CATEGORY_ICONS[category] || (
-                      <DollarSign className="w-4 h-4" />
-                    )}
+                    {type === "income"
+                      ? INCOME_CATEGORY_ICONS[category] || (
+                          <Banknote className="w-4 h-4" />
+                        )
+                      : EXPENSE_CATEGORY_ICONS[category] || (
+                          <Banknote className="w-4 h-4" />
+                        )}
                   </div>
 
                   <div className="min-w-0">
@@ -106,7 +91,7 @@ const RecentTransactionsCard = ({
 
                 <span
                   className={
-                    type === "income" ? "text-purple-600" : "text-amber-600"
+                    type === "income" ? "text-emerald-600" : "text-amber-600"
                   }
                 >
                   {type === "income" ? "+" : "-"} {CURRENCY} {Number(amount)}
@@ -145,11 +130,7 @@ const RecentTransactionsCard = ({
           )}
         </div>
 
-        <SpendingByCategoryCard
-          topCategories={topCategories}
-          stats={stats}
-          CATEGORY_ICONS={CATEGORY_ICONS}
-        />
+        <SpendingByCategoryCard topCategories={topCategories} stats={stats} />
       </div>
     </div>
   );
