@@ -29,7 +29,7 @@ const RecentTransactionsCard = ({
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-md md:text-xl lg:text-xl xl:text-xl font-bold text-gray-800 flex items-center gap-3">
-            <Clock className="w-6 h-6 text-teal-500" />
+            <Clock className="w-6 h-6 text-purple-500" />
             Recent Transactions
           </h3>
 
