@@ -274,14 +274,23 @@ export const SelectInput = ({
           optionSelected: "#F59E0B",
           optionHover: "#FEF3C7",
         }
-      : {
-          border: "#EDE9FE",
-          focusBorder: "#A78BFA",
-          focusRing: "#EDE9FE",
-          hoverBorder: "#A78BFA",
-          optionSelected: "#7C3AED",
-          optionHover: "#F3E8FF",
-        };
+      : variant === "emerald"
+        ? {
+            border: "#A7F3D0",
+            focusBorder: "#10B981",
+            focusRing: "#D1FAE5",
+            hoverBorder: "#10B981",
+            optionSelected: "#10B981",
+            optionHover: "#ECFDF5",
+          }
+        : {
+            border: "#EDE9FE",
+            focusBorder: "#A78BFA",
+            focusRing: "#EDE9FE",
+            hoverBorder: "#A78BFA",
+            optionSelected: "#7C3AED",
+            optionHover: "#F3E8FF",
+          };
 
   const selectedOption = options.find((o) => o.value === value) || null;
 
@@ -330,30 +339,15 @@ export const SelectInput = ({
               height: s.height,
               paddingLeft: s.paddingLeft,
               borderWidth: "1px",
-              // borderColor: isMutedDisabledNow
-              //   ? "#DDD6FE"
-              //   : state.isFocused
-              //     ? "#A78BFA"
-              //     : "#EDE9FE",
-
               borderColor: isMutedDisabledNow
                 ? "#DDD6FE"
                 : state.isFocused
                   ? colors.focusBorder
                   : colors.border,
-              // boxShadow:
-              //   state.isFocused && !state.isDisabled
-              //     ? "0 0 0 2px #EDE9FE"
-              //     : "none",
               boxShadow:
                 state.isFocused && !state.isDisabled
                   ? `0 0 0 2px ${colors.focusRing}`
                   : "none",
-
-              // "&:hover": {
-              //   borderColor: isMutedDisabledNow ? "#DDD6FE" : "#A78BFA",
-              // },
-
               "&:hover": {
                 borderColor: isMutedDisabledNow
                   ? "#DDD6FE"
@@ -427,11 +421,6 @@ export const SelectInput = ({
             cursor: "pointer",
             padding: s.optionPadding,
             fontSize: `${s.fontSize}px`,
-            // backgroundColor: state.isSelected
-            //   ? "#7C3AED"
-            //   : state.isFocused
-            //     ? "#F3E8FF"
-            //     : "white",
             backgroundColor: state.isSelected
               ? colors.optionSelected
               : state.isFocused
