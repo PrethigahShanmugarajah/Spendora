@@ -92,7 +92,9 @@ export const InputField = ({
   const variantClasses =
     variant === "amber"
       ? "border-amber-100 focus:border-amber-400 focus:ring-1 focus:ring-amber-100"
-      : "border-purple-100 focus:border-purple-400 focus:ring-1 focus:ring-purple-100";
+      : variant === "emerald"
+        ? "border-emerald-100 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-100"
+        : "border-purple-100 focus:border-purple-400 focus:ring-1 focus:ring-purple-100";
 
   const baseInput = `rounded-full border bg-white shadow-sm w-full focus:outline-none ${variantClasses} ${s.py} ${s.px} ${s.text}`;
   const unstyledInput =
