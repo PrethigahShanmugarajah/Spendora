@@ -54,12 +54,14 @@ const TransactionItem = ({
     }
   };
 
+  const categoryIcon = categoryIcons?.[transaction.category];
+
   return (
     <div
       className={`flex flex-row items-center justify-between gap-3 p-4 rounded-xl border border-gray-100 mb-3 last:mb-0 ${
         isEditing
           ? transaction.type === "income"
-            ? "bg-purple-100"
+            ? "bg-emerald-100"
             : "bg-amber-100"
           : "hover:bg-gray-50"
       }`}
@@ -67,14 +69,10 @@ const TransactionItem = ({
       <div className="flex items-center gap-3 flex-1 min-w-0">
         <div
           className={`${iconClass} ${
-            transaction.type === "income"
-              ? "bg-purple-100 text-purple-600"
-              : "bg-amber-100 text-amber-600"
+            transaction.type === "income" ? "bg-emerald-100" : "bg-amber-100"
           }`}
         >
-          {categoryIcons[transaction.category] || (
-            <Banknote className="w-5 h-5" />
-          )}
+          {categoryIcon || <Banknote className="w-5 h-5" />}
         </div>
 
         <div className="min-w-0 flex-1">
@@ -92,7 +90,7 @@ const TransactionItem = ({
                 }
                 placeholder="Enter description"
                 size="s"
-                variant={transaction.type === "income" ? "purple" : "amber"}
+                variant={transaction.type === "income" ? "emerald" : "amber"}
                 error={errors.description}
               />
             </>
@@ -123,7 +121,7 @@ const TransactionItem = ({
                 }
                 placeholder="Enter amount"
                 size="s"
-                variant={transaction.type === "income" ? "purple" : "amber"}
+                variant={transaction.type === "income" ? "emerald" : "amber"}
                 error={errors.amount}
               />
             </>
@@ -131,7 +129,7 @@ const TransactionItem = ({
             <span
               className={`${amountClass} ${
                 transaction.type === "income"
-                  ? "text-purple-600"
+                  ? "text-emerald-600"
                   : "text-amber-600"
               }`}
             >
@@ -152,7 +150,7 @@ const TransactionItem = ({
                 onClick={handleSaveClick}
                 className={`p-2 rounded-lg ${
                   transaction.type === "income"
-                    ? "bg-purple-500 hover:bg-purple-600 text-white"
+                    ? "bg-emerald-500 hover:bg-emerald-600 text-white"
                     : "bg-amber-500 hover:bg-amber-600 text-white"
                 }`}
                 title="Save"
@@ -193,7 +191,7 @@ const TransactionItem = ({
                 }}
                 className={`p-2 rounded-lg ${
                   transaction.type === "income"
-                    ? "text-purple-600 hover:bg-purple-100"
+                    ? "text-emerald-600 hover:bg-emerald-100"
                     : "text-amber-600 hover:bg-amber-100"
                 }`}
                 title="Edit"
