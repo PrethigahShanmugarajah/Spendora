@@ -9,8 +9,8 @@ const TimeFrame = ({
 }) => {
   const colorClass = {
     purple: "bg-purple-500",
+    emerald: "bg-emerald-500",
     amber: "bg-amber-500",
-    violet: "bg-violet-500",
   }[color];
 
   const styleClass = {
