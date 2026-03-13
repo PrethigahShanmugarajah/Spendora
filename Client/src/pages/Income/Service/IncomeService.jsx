@@ -8,7 +8,7 @@ import {
   deleteIncome,
   updateIncome,
 } from "../../../services/mutations";
-import { toIsoWithClientTime } from "../../../utils/incomeUtils";
+import { toIsoWithClientTime } from "../../../utils/helpers";
 
 /* -------- Fetch income overview -------- */
 export async function fetchIncomeOverviewApi(timeFrame) {
