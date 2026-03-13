@@ -106,3 +106,49 @@ export const fetchDashboardOverview = async () => {
     throw error;
   }
 };
+
+/* -------- Fetch Income Overview -------- */
+export const fetchIncomeOverview = async (range = "monthly") => {
+  try {
+    const { data } = await api.get(API_ROUTES.INCOME.OVERVIEW, {
+      params: { range },
+    });
+    console.log("Fetch Income Overview API Response:", data);
+
+    if (data?.success) {
+      // toast.success(data?.message);
+      console.log("Fetch income overview Success:", data?.message);
+    } else {
+      toast.warn(data?.message || "Fetch income overview with warning");
+      console.warn(
+        "Fetch Income Overview Warning:",
+        data?.message || "Fetch Income Overview warning",
+      );
+    }
+
+    return data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error?.message);
+    console.error("Fetch Income Overview Error:", error);
+
+    throw error;
+  }
+};
+
+/* -------- Download Income Data -------- */
+export const downloadIncomeData = async (counter = 0) => {
+  try {
+    const response = await api.get(API_ROUTES.INCOME.DOWNLOAD, {
+      params: { counter },
+      responseType: "blob",
+    });
+    console.log("Download Income Data API Response:", response);
+
+    return response;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error?.message);
+    console.error("Download Income Data Error:", error);
+
+    throw error;
+  }
+};
