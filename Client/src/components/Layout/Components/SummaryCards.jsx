@@ -1,5 +1,5 @@
 // Client / src / components / Layout / Components / SummaryCards.jsx
-import { ArrowDown, ArrowUp, DollarSign, PiggyBank } from "lucide-react";
+import { ArrowDown, ArrowUp, Coins, PiggyBank } from "lucide-react";
 import { CURRENCY } from "../../../utils/helpers";
 
 const SummaryCards = ({ stats, getSavingsRating }) => {
@@ -19,14 +19,14 @@ const SummaryCards = ({ stats, getSavingsRating }) => {
           </div>
 
           <div className="bg-purple-100 p-2 rounded-lg">
-            <DollarSign className="w-5 h-5 text-purple-600" />
+            <Coins className="w-5 h-5 text-purple-600" />
           </div>
         </div>
 
         <p className="text-xs text-gray-500 mt-3">
           <span className="text-purple-600 font-medium">
-            +${stats.last30DaysSavings.toLocaleString()}
-          </span>
+            +{CURRENCY} {stats.last30DaysSavings.toLocaleString()}
+          </span>{" "}
           this month
         </p>
       </div>
@@ -50,8 +50,8 @@ const SummaryCards = ({ stats, getSavingsRating }) => {
         </div>
 
         <p className="text-xs text-gray-500 mt-3">
-          <span className="text-emerald-600 font-medium">+12.5%</span>
-          from last month
+          <span className="text-emerald-600 font-medium">+12.5%</span> from last
+          month
         </p>
       </div>
 
@@ -80,8 +80,8 @@ const SummaryCards = ({ stats, getSavingsRating }) => {
             } `}
           >
             {stats.expenseChange > 0 ? "+" : ""}
-            {stats.expenseChange} %
-          </span>
+            {stats.expenseChange}%
+          </span>{" "}
           from last month
         </p>
       </div>
