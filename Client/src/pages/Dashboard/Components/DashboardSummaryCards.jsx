@@ -23,20 +23,20 @@ const DashboardSummaryCards = ({
     <div className="grid grid-cols-1 lg:-mx-3 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-5 mb-8">
       <FinancialCard
         icon={
-          <div className="p-2 bg-purple-100 rounded-lg">
-            <Wallet className="w-5 h-5 text-purple-600" />
+          <div className="p-2 bg-emerald-100 rounded-lg">
+            <Wallet className="w-5 h-5 text-emerald-600" />
           </div>
         }
         label="Total Balance"
         value={`${CURRENCY} ${Math.round(displayIncome - displayExpenses).toLocaleString()}`}
         additionalContent={
           <div className="flex items-center gap-2 mt-2 text-sm">
-            <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-lg text-xs">
-              +{CURRENCY} {Math.round(displayIncome).toLocaleString()}
+            <span className="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg text-xs">
+              + {CURRENCY} {Math.round(displayIncome).toLocaleString()}
             </span>
 
             <span className="bg-amber-100 text-amber-800 px-1 py-1 rounded-lg text-xs">
-              +{CURRENCY} {Math.round(displayExpenses).toLocaleString()}
+              - {CURRENCY} {Math.round(displayExpenses).toLocaleString()}
             </span>
           </div>
         }
