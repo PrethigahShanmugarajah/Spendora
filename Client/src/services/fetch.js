@@ -152,3 +152,49 @@ export const downloadIncomeData = async (counter = 0) => {
     throw error;
   }
 };
+
+/* -------- Fetch Expense Overview -------- */
+export const fetchExpenseOverview = async (range = "monthly") => {
+  try {
+    const { data } = await api.get(API_ROUTES.EXPENSE.OVERVIEW, {
+      params: { range },
+    });
+    console.log("Fetch Expense Overview API Response:", data);
+
+    if (data?.success) {
+      // toast.success(data?.message);
+      console.log("Fetch Expense overview Success:", data?.message);
+    } else {
+      toast.warn(data?.message || "Fetch expense overview with warning");
+      console.warn(
+        "Fetch Expense Overview Warning:",
+        data?.message || "Fetch Expense Overview warning",
+      );
+    }
+
+    return data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error?.message);
+    console.error("Fetch Expense Overview Error:", error);
+
+    throw error;
+  }
+};
+
+/* -------- Download Expense Data -------- */
+export const downloadExpenseData = async (counter = 0) => {
+  try {
+    const response = await api.get(API_ROUTES.INCOME.DOWNLOAD, {
+      params: { counter },
+      responseType: "blob",
+    });
+    console.log("Download Expense Data API Response:", response);
+
+    return response;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error?.message);
+    console.error("Download Expense Data Error:", error);
+
+    throw error;
+  }
+};
