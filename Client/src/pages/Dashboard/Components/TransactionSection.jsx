@@ -85,7 +85,7 @@ const TransactionSection = ({
           <div className="pt-4 border-t border-gray-100">
             <button
               onClick={() => setShowAll(!showAll)}
-              className="w-full flex items-center justify-center gap-2 py-3 text-purple-600 font-medium hover:bg-purple-50 rounded-xl transition-colors"
+              className={`w-full flex items-center justify-center gap-2 py-3 ${textColor} font-medium ${bgColor} rounded-xl transition-colors`}
             >
               {showAll ? (
                 <>
