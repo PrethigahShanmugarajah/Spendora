@@ -125,7 +125,7 @@ const RecentTransactionsCard = ({
               </p>
             </div>
           ) : (
-            <div className="pt-4 border-t border-gray-100">
+            <div className="pt-4 pb-4 border-t border-gray-100">
               <button
                 onClick={() => setShowAllTransactions(!showAllTransactions)}
                 className="w-full flex items-center justify-center gap-2 py-3 text-purple-600 font-medium hover:bg-purple-50 rounded-xl transition-colors"
