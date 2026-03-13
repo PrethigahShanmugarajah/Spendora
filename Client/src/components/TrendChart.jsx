@@ -1,4 +1,4 @@
-// Client / src / pages / Income / Components / IncomeChart.jsx
+// Client / src / components / TrendChart.jsx
 import { BarChart2 } from "lucide-react";
 import {
   Bar,
@@ -11,20 +11,32 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { INCOME_COLORS } from "../../../constants/theme";
+import { CURRENCY } from "../utils/helpers";
 
-const IncomeChart = ({ chartData, timeFrame, timeFrameRange }) => {
+const TrendChart = ({
+  chartData = [],
+  timeFrame,
+  timeFrameRange,
+  title = "Trends",
+  dataKey = "value",
+  tooltipLabel = "Amount",
+  colors = [],
+  iconColor = "text-purple-500",
+  referenceLineColor = "#A855F7",
+}) => {
+  const trendLabel =
+    timeFrame === "daily"
+      ? "Hourly"
+      : timeFrame === "yearly"
+        ? "Monthly"
+        : "Daily";
+
   return (
     <div className="hidden md:block -mx-7 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
         <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-5 flex items-center gap-2 md:gap-3">
-          <BarChart2 className="w-5 h-5 md:w-6 md:h-6 text-emerald-500" />
-          {timeFrame === "daily"
-            ? "Hourly"
-            : timeFrame === "yearly"
-              ? "Monthly"
-              : "Daily"}{" "}
-          Income Trends
+          <BarChart2 className={`w-5 h-5 md:w-6 md:h-6 ${iconColor}`} />
+          {trendLabel} {title}
           <span className="text-sm text-gray-500 font-normal">
             {" "}
             ({timeFrameRange.label})
@@ -38,40 +50,31 @@ const IncomeChart = ({ chartData, timeFrame, timeFrameRange }) => {
             data={chartData}
             margin={{ top: 20, right: 20, left: 10, bottom: 20 }}
           >
-            <defs>
-              <linearGradient
-                id="incomeBarGradient"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop offset="0%" stopColor="#00C49F" />
-                <stop offset="100%" stopColor="#00B894" />
-              </linearGradient>
-            </defs>
             <CartesianGrid
               strokeDasharray="3 3"
               stroke="#F3F4F6"
               vertical={false}
             />
+
             <XAxis
               dataKey="label"
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#6B7280", fontSize: 12 }}
             />
+
             <YAxis
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#6B7280", fontSize: 12 }}
-              width={50}
-              tickFormatter={(value) => `$${value.toLocaleString()}`}
+              width={100}
+              tickFormatter={(value) => `${CURRENCY} ${value.toLocaleString()}`}
             />
+
             <Tooltip
               formatter={(value) => [
-                `$${Math.round(value).toLocaleString()}`,
-                "Income",
+                `${CURRENCY} ${Math.round(value).toLocaleString()}`,
+                tooltipLabel,
               ]}
               contentStyle={{
                 backgroundColor: "rgba(255, 255, 255, 0.95)",
@@ -82,27 +85,28 @@ const IncomeChart = ({ chartData, timeFrame, timeFrameRange }) => {
                 backdropFilter: "blur(4px)",
               }}
             />
+
             <Bar
-              dataKey="income"
-              name="Income"
+              dataKey={dataKey}
+              name={tooltipLabel}
               radius={[6, 6, 0, 0]}
               barSize={20}
             >
-              {chartData.map((entry, index) => (
+              {(chartData || []).map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={INCOME_COLORS[index % INCOME_COLORS.length]}
+                  fill={colors[index % colors.length]}
                 />
               ))}
             </Bar>
 
-            {chartData.map(
+            {(chartData || []).map(
               (point, index) =>
                 point.isCurrent && (
                   <ReferenceLine
                     key={index}
                     x={point.label}
-                    stroke="#00C49F"
+                    stroke={referenceLineColor}
                     strokeWidth={2}
                     strokeDasharray="3 3"
                   />
@@ -115,4 +119,4 @@ const IncomeChart = ({ chartData, timeFrame, timeFrameRange }) => {
   );
 };
 
-export default IncomeChart;
+export default TrendChart;
