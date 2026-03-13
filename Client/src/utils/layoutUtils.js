@@ -132,16 +132,31 @@ export const getSavingsRating = (rate) => {
   return rate > 30 ? "Excellent" : rate > 20 ? "Good" : "Needs improvement";
 };
 
-/* -------- Get top expense categories -------- */
+/* -------- Get top categories from income and expense -------- */
 export const getTopCategories = (transactions = []) => {
-  return Object.entries(
+  const incomeCategories = Object.entries(
     transactions
-      .filter((t) => t.type === "expense")
+      .filter((t) => t.type === "income")
       .reduce((acc, t) => {
-        acc[t.category] = (acc[t.category] || 0) + Number(t.amount);
+        const category = t.category || "Other";
+        acc[category] = (acc[category] || 0) + Math.abs(Number(t.amount || 0));
         return acc;
       }, {}),
   )
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
+    .slice(0, 3);
+
+  const expenseCategories = Object.entries(
+    transactions
+      .filter((t) => t.type === "expense")
+      .reduce((acc, t) => {
+        const category = t.category || "Other";
+        acc[category] = (acc[category] || 0) + Math.abs(Number(t.amount || 0));
+        return acc;
+      }, {}),
+  )
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
+  return [...incomeCategories, ...expenseCategories];
 };
