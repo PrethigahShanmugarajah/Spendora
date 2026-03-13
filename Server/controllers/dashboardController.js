@@ -36,14 +36,30 @@ export async function getDashboardOverview(req, res) {
       ...expenses.map((e) => ({ ...e, type: "expense" })),
     ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-    const spendByCategory = {};
-    for (const exp of expenses) {
-      const cat = exp.category || "Other";
-      spendByCategory[cat] =
-        (spendByCategory[cat] || 0) + Number(exp.amount || 0);
+    const incomeByCategory = {};
+    for (const inc of incomes) {
+      const cat = inc.category || "Other";
+      incomeByCategory[cat] =
+        (incomeByCategory[cat] || 0) + Number(inc.amount || 0);
     }
 
-    const expenseDistribution = Object.entries(spendByCategory).map(
+    const incomeDistribution = Object.entries(incomeByCategory).map(
+      ([category, amount]) => ({
+        category,
+        amount,
+        percent:
+          monthlyIncome === 0 ? 0 : Math.round((amount / monthlyIncome) * 100),
+      }),
+    );
+
+    const expenseByCategory = {};
+    for (const exp of expenses) {
+      const cat = exp.category || "Other";
+      expenseByCategory[cat] =
+        (expenseByCategory[cat] || 0) + Number(exp.amount || 0);
+    }
+
+    const expenseDistribution = Object.entries(expenseByCategory).map(
       ([category, amount]) => ({
         category,
         amount,
@@ -63,8 +79,14 @@ export async function getDashboardOverview(req, res) {
         savings,
         savingsRate,
         recentTransactions,
-        spendByCategory,
-        expenseDistribution,
+        income: {
+          byCategory: incomeByCategory,
+          distribution: incomeDistribution,
+        },
+        expense: {
+          byCategory: expenseByCategory,
+          distribution: expenseDistribution,
+        },
       },
     });
   } catch (error) {
