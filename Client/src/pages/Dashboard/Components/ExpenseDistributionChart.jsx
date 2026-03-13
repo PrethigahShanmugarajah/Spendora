@@ -1,0 +1,87 @@
+// Client / src / pages / Dashboard / Components / ExpenseDistributionChart.jsx
+import { PieChart as PieChartIcon } from "lucide-react";
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
+import { COLORS } from "../../../constants/theme";
+
+const ExpenseDistributionChart = ({
+  financialOverviewData,
+  timeFrameRange,
+}) => {
+  return (
+    <div className="hidden md:block bg-white lg:-mx-5.5 md:-mx-4 lg:p-1 xl:-mx-3 rounded-xl p-5 shadow-sm border border-gray-100 relative overflow-hidden mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+        <h3 className="text-xl lg:pt-3 xl:pl-3 font-bold text-gray-800 mb-5 flex items-center gap-3">
+          <PieChartIcon className="w-6 h-6 text-purple-500" />
+          Expense Distribution
+          <span className="text-sm text-gray-500 font-normal">
+            {" "}
+            ({timeFrameRange.label})
+          </span>
+        </h3>
+      </div>
+
+      <div className="h-90">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart className="lg:-px-5 lg:text-xs xl:text-xl">
+            <Pie
+              data={financialOverviewData}
+              cx="50%"
+              cy="50%"
+              innerRadius={70}
+              outerRadius={110}
+              paddingAngle={2}
+              dataKey="value"
+              label={({ name, percent }) =>
+                `${name}: ${Math.round(percent * 100)}%`
+              }
+              labelLine={false}
+            >
+              {financialOverviewData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                  stroke="#fff"
+                  strokeWidth={2}
+                />
+              ))}
+            </Pie>
+            <Tooltip
+              formatter={(value) => [
+                `${Math.round(value).toLocaleString()}`,
+                "Amount",
+              ]}
+              contentStyle={{
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                border: "1px solid #E5E7EB",
+                borderRadius: "0.75rem",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                padding: "12px",
+              }}
+              itemStyle={{ fontWeight: 400 }}
+            />
+            <Legend
+              layout="horizontal"
+              verticalAlign="bottom"
+              align="center"
+              formatter={(v) => (
+                <span className="text-sm font-medium text-gray-600">{v}</span>
+              )}
+              iconSize={10}
+              iconType="circle"
+              wrapperStyle={{ paddingTop: 8 }}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+};
+
+export default ExpenseDistributionChart;
