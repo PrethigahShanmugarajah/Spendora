@@ -12,6 +12,8 @@ const API_ROUTES = {
     ADD: `${BASE_URL}/api/income/add`,
     UPDATE: (id) => `${BASE_URL}/api/income/update/${id}`,
     DELETE: (id) => `${BASE_URL}/api/income/delete/${id}`,
+    OVERVIEW: `${BASE_URL}/api/income/overview`,
+    DOWNLOAD: `${BASE_URL}/api/income/download`,
   },
   EXPENSE: {
     GET: `${BASE_URL}/api/expense/get`,
