@@ -46,6 +46,8 @@ const Login = ({ onLogin }) => {
         error?.message ||
         "Login was unsuccessful. Please verify your credentials and try again.";
       setError(serverMsg);
+    } finally {
+      setIsLoading(false);
     }
   };
 

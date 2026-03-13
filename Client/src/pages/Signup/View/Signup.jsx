@@ -1,4 +1,4 @@
-// Client / src / pages / Signup / View / .jsx
+// Client / src / pages / Signup / View / Signup.jsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
@@ -66,6 +66,8 @@ const Signup = ({ onSignup }) => {
             error?.message || "An unexpected error occurred. Please try again.",
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
