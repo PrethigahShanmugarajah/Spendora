@@ -1,8 +1,12 @@
 // Client / src / components / Layout / Components / SpendingByCategoryCard.jsx
 import { DollarSign, PieChart } from "lucide-react";
 import { CURRENCY } from "../../../utils/helpers";
+import {
+  EXPENSE_CATEGORY_ICONS,
+  INCOME_CATEGORY_ICONS,
+} from "../../../constants/theme";
 
-const SpendingByCategoryCard = ({ topCategories, stats, CATEGORY_ICONS }) => {
+const SpendingByCategoryCard = ({ topCategories, stats }) => {
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h3 className="text-lg md:text-xl lg:text-xl xl:text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
@@ -16,13 +20,24 @@ const SpendingByCategoryCard = ({ topCategories, stats, CATEGORY_ICONS }) => {
             className="flex items-center md:text-lg lg:text-sm xl:text-lg justify-between"
           >
             <div className="flex items-center gap-3">
-              <div className="bg-gray-100 p-2 rounded-lg">
-                {CATEGORY_ICONS[category] || (
-                  <DollarSign className="w-4 h-4 text-gray-600" />
-                )}
+              <div
+                className={`p-2 rounded-lg ${
+                  INCOME_CATEGORY_ICONS[category]
+                    ? "bg-emerald-100 text-emerald-600"
+                    : EXPENSE_CATEGORY_ICONS[category]
+                      ? "bg-amber-100 text-amber-600"
+                      : "bg-gray-100 text-gray-600"
+                }`}
+              >
+                {INCOME_CATEGORY_ICONS[category] ||
+                  EXPENSE_CATEGORY_ICONS[category] || (
+                    <DollarSign className="w-4 h-4" />
+                  )}
               </div>
+
               <span className="font-medium text-gray-700">{category}</span>
             </div>
+
             <span className="font-semibold text-gray-800">
               {CURRENCY} {amount}
             </span>
@@ -32,7 +47,7 @@ const SpendingByCategoryCard = ({ topCategories, stats, CATEGORY_ICONS }) => {
 
       <div className="mt-6 pt-6 border-t border-gray-100">
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-linear-to-br from-purple-50 to-violet-50 rounded-xl p-4">
+          <div className="bg-linear-to-br from-emerald-50 to-green-50 rounded-xl p-4">
             <p className="text-sm text-gray-600">Total Income</p>
             <p className="text-sm font-bold text-gray-800">
               {CURRENCY} {stats.allTimeIncome.toLocaleString()}
