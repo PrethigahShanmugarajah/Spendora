@@ -1,4 +1,4 @@
-// Client / src / pages / Dashboard / Components / ExpenseDistributionChart.jsx
+// Client / src / pages / Dashboard / Components / DistributionChart.jsx
 import { PieChart as PieChartIcon } from "lucide-react";
 import {
   Cell,
@@ -8,18 +8,22 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { COLORS } from "../../../constants/theme";
+import { CURRENCY } from "../../../utils/helpers";
 
-const ExpenseDistributionChart = ({
-  financialOverviewData,
+const DistributionChart = ({
+  title,
+  chartData = [],
   timeFrameRange,
+  colors = [],
+  iconColor = "text-gray-500",
+  tooltipLabel = "Amount",
 }) => {
   return (
     <div className="hidden md:block bg-white lg:-mx-5.5 md:-mx-4 lg:p-1 xl:-mx-3 rounded-xl p-5 shadow-sm border border-gray-100 relative overflow-hidden mb-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
         <h3 className="text-xl lg:pt-3 xl:pl-3 font-bold text-gray-800 mb-5 flex items-center gap-3">
-          <PieChartIcon className="w-6 h-6 text-purple-500" />
-          Expense Distribution
+          <PieChartIcon className={`w-6 h-6 ${iconColor}`} />
+          {title}
           <span className="text-sm text-gray-500 font-normal">
             {" "}
             ({timeFrameRange.label})
@@ -31,7 +35,7 @@ const ExpenseDistributionChart = ({
         <ResponsiveContainer width="100%" height="100%">
           <PieChart className="lg:-px-5 lg:text-xs xl:text-xl">
             <Pie
-              data={financialOverviewData}
+              data={chartData}
               cx="50%"
               cy="50%"
               innerRadius={70}
@@ -39,23 +43,24 @@ const ExpenseDistributionChart = ({
               paddingAngle={2}
               dataKey="value"
               label={({ name, percent }) =>
-                `${name}: ${Math.round(percent * 100)}%`
+                `${name}: ${((percent || 0) * 100).toFixed(0)}%`
               }
               labelLine={false}
             >
-              {financialOverviewData.map((entry, index) => (
+              {(chartData || []).map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                  stroke="#fff"
+                  fill={colors[index % colors.length]}
+                  stroke="#FFFFFF"
                   strokeWidth={2}
                 />
               ))}
             </Pie>
+
             <Tooltip
               formatter={(value) => [
-                `${Math.round(value).toLocaleString()}`,
-                "Amount",
+                `${CURRENCY} ${Math.round(value).toLocaleString()}`,
+                tooltipLabel,
               ]}
               contentStyle={{
                 backgroundColor: "rgba(255, 255, 255, 0.95)",
@@ -66,6 +71,7 @@ const ExpenseDistributionChart = ({
               }}
               itemStyle={{ fontWeight: 400 }}
             />
+
             <Legend
               layout="horizontal"
               verticalAlign="bottom"
@@ -84,4 +90,4 @@ const ExpenseDistributionChart = ({
   );
 };
 
-export default ExpenseDistributionChart;
+export default DistributionChart;
