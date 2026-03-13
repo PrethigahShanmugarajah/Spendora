@@ -18,6 +18,7 @@ const IncomeTransactionsSection = ({
   setEditForm,
   handleEditTransaction,
   handleDeleteTransaction,
+  loading,
   setEditingId,
   setShowModal,
 }) => {
@@ -54,6 +55,7 @@ const IncomeTransactionsSection = ({
               onSave={handleEditTransaction}
               onCancel={() => setEditingId(null)}
               onDelete={handleDeleteTransaction}
+              loading={loading}
               type="income"
               categoryIcons={CATEGORY_ICONS_Inc}
               setEditingId={setEditingId}
