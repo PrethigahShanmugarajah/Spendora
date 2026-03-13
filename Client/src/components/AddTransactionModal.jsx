@@ -2,6 +2,7 @@
 import { X } from "lucide-react";
 import { InputField } from "./FormField/InputField";
 import { SelectInput } from "./FormField/SelectInput";
+import { ClipLoader } from "react-spinners";
 
 const AddTransactionModal = ({
   showModal,
@@ -9,6 +10,7 @@ const AddTransactionModal = ({
   newTransaction,
   setNewTransaction,
   handleAddTransaction,
+  loading = false,
   type = "both",
   title = "Add New Transaction",
   buttonText = "Add Transaction",
@@ -190,13 +192,20 @@ const AddTransactionModal = ({
 
             <button
               type="submit"
+              disabled={loading}
               className={`w-full text-white py-3 rounded-lg font-medium mt-4 shadow-md hover:shadow-lg transition-all ${
                 newTransaction.type === "income"
                   ? "bg-purple-500 hover:bg-purple-600"
                   : "bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
               }`}
             >
-              {buttonText}
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <ClipLoader size={18} color="#FFFFFF" />
+                </div>
+              ) : (
+                buttonText
+              )}
             </button>
           </div>
         </form>
