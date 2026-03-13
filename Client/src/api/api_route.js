@@ -20,6 +20,8 @@ const API_ROUTES = {
     ADD: `${BASE_URL}/api/expense/add`,
     UPDATE: (id) => `${BASE_URL}/api/expense/update/${id}`,
     DELETE: (id) => `${BASE_URL}/api/expense/delete/${id}`,
+    OVERVIEW: `${BASE_URL}/api/expense/overview`,
+    DOWNLOAD: `${BASE_URL}/api/expense/download`,
   },
   DASHBOARD: {
     OVERVIEW: `${BASE_URL}/api/dashboard/overview`,
