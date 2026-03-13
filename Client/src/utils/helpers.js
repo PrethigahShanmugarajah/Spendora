@@ -232,3 +232,23 @@ export const exportToExcel = (data, fileName = "transactions") => {
     toast.error("Error exporting data. Please try again.");
   }
 };
+
+/* -------- Convert date to ISO with current client time -------- */
+export function toIsoWithClientTime(dateValue) {
+  if (!dateValue) {
+    return new Date().toISOString();
+  }
+
+  if (typeof dateValue === "string" && dateValue.length === 10) {
+    const now = new Date();
+    const hhmmss = now.toTimeString().slice(0, 8);
+    const combined = new Date(`${dateValue}T${hhmmss}`);
+    return combined.toISOString();
+  }
+
+  try {
+    return new Date(dateValue).toISOString();
+  } catch (error) {
+    return new Date().toISOString();
+  }
+}
