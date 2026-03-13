@@ -84,7 +84,7 @@ const AddTransactionModal = ({
                 type === "both" ? "Salary, Funds, etc" : "Groceries, Rent, etc"
               }
               size="s"
-              variant={newTransaction.type === "income" ? "purple" : "amber"}
+              variant={newTransaction.type === "income" ? "emerald" : "amber"}
               required
             />
 
@@ -102,7 +102,7 @@ const AddTransactionModal = ({
               }
               placeholder="LKR 100.00"
               size="s"
-              variant={newTransaction.type === "income" ? "purple" : "amber"}
+              variant={newTransaction.type === "income" ? "emerald" : "amber"}
               required
             />
 
@@ -118,7 +118,7 @@ const AddTransactionModal = ({
 
                     const activeStyle =
                       t === "income"
-                        ? "bg-purple-500 text-white shadow-md"
+                        ? "bg-emerald-500 text-white shadow-md"
                         : "bg-amber-500 text-white shadow-md";
 
                     return (
@@ -167,7 +167,7 @@ const AddTransactionModal = ({
               }
               placeholder="Select Category"
               size="m"
-              variant={newTransaction.type === "income" ? "purple" : "amber"}
+              variant={newTransaction.type === "income" ? "emerald" : "amber"}
               required
             />
 
@@ -184,7 +184,7 @@ const AddTransactionModal = ({
                 }))
               }
               size="s"
-              variant={newTransaction.type === "income" ? "purple" : "amber"}
+              variant={newTransaction.type === "income" ? "emerald" : "amber"}
               min={minDate}
               max={currentDate}
               required
@@ -195,7 +195,7 @@ const AddTransactionModal = ({
               disabled={loading}
               className={`w-full text-white py-3 rounded-lg font-medium mt-4 shadow-md hover:shadow-lg transition-all ${
                 newTransaction.type === "income"
-                  ? "bg-purple-500 hover:bg-purple-600"
+                  ? "bg-linear-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600"
                   : "bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
               }`}
             >
