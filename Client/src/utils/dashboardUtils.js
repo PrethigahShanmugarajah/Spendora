@@ -75,9 +75,15 @@ export function buildOverviewMeta(data, recent) {
         : Number(data?.monthlyIncome || 0) - Number(data?.monthlyExpense || 0),
     savingsRate:
       typeof data?.savingsRate !== "undefined" ? data.savingsRate : null,
-    spendByCategory: data?.spendByCategory || {},
-    expenseDistribution: data?.expenseDistribution || [],
     recentTransactions: recent,
+    income: {
+      byCategory: data?.income?.byCategory || {},
+      distribution: data?.income?.distribution || [],
+    },
+    expense: {
+      byCategory: data?.expense?.byCategory || {},
+      distribution: data?.expense?.distribution || [],
+    },
   };
 }
 
@@ -111,38 +117,6 @@ export function buildGaugeData(income, expenses, savings) {
       max: maxValues.savings,
     },
   ];
-}
-
-/* -------- Build expense distribution chart data -------- */
-export function buildFinancialOverviewData(
-  timeFrame,
-  overviewMeta,
-  filteredTransactions,
-) {
-  if (
-    timeFrame === "monthly" &&
-    Array.isArray(overviewMeta?.expenseDistribution) &&
-    overviewMeta.expenseDistribution.length > 0
-  ) {
-    return overviewMeta.expenseDistribution.map((d) => ({
-      name: d.category,
-      value: Math.round(Number(d.amount) || 0),
-    }));
-  }
-
-  const categories = {};
-
-  (filteredTransactions || []).forEach((transaction) => {
-    if (transaction.type === "expense") {
-      categories[transaction.category] =
-        (categories[transaction.category] || 0) + transaction.amount;
-    }
-  });
-
-  return Object.keys(categories).map((category) => ({
-    name: category,
-    value: Math.round(categories[category]),
-  }));
 }
 
 /* -------- Get display summary values -------- */
