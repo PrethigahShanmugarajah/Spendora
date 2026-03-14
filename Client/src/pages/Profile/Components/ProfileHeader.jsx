@@ -1,4 +1,3 @@
-// Client / src / pages / Profile / Components / ProfileHeader.jsx
 import { User } from "lucide-react";
 import { PulseLoader } from "react-spinners";
 

@@ -1,4 +1,3 @@
-// Client / src / utils / helpers.js
 import { toast } from "react-toastify";
 import * as XLSX from "xlsx";
 
@@ -250,5 +249,151 @@ export function toIsoWithClientTime(dateValue) {
     return new Date(dateValue).toISOString();
   } catch (error) {
     return new Date().toISOString();
+  }
+}
+
+/* -------- Check whether date is inside given range -------- */
+export function isDateInRange(date, start, end) {
+  const transactionDate = new Date(date);
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  transactionDate.setHours(0, 0, 0, 0);
+  startDate.setHours(0, 0, 0, 0);
+  endDate.setHours(23, 59, 59, 999);
+
+  return transactionDate >= startDate && transactionDate <= endDate;
+}
+
+/* -------- Filter transactions by timeframe -------- */
+export function getTimeFrameTransactions(transactions = [], timeFrameRange) {
+  return transactions.filter((transaction) =>
+    isDateInRange(transaction.date, timeFrameRange.start, timeFrameRange.end),
+  );
+}
+
+/* -------- Filter transactions by selected filter -------- */
+export function getFilteredTransactions(
+  transactions = [],
+  filter,
+  timeFrameRange,
+) {
+  if (filter === "all") {
+    return transactions;
+  }
+
+  return transactions.filter((transaction) => {
+    if (filter === "month" || filter === "year") {
+      const transactionDate = new Date(transaction.date);
+
+      if (filter === "month") {
+        return (
+          transactionDate.getMonth() === timeFrameRange.start.getMonth() &&
+          transactionDate.getFullYear() === timeFrameRange.start.getFullYear()
+        );
+      }
+
+      if (filter === "year") {
+        return (
+          transactionDate.getFullYear() === timeFrameRange.start.getFullYear()
+        );
+      }
+    }
+
+    return transaction.category.toLowerCase() === filter.toLowerCase();
+  });
+}
+
+/* -------- Extract auth profile from API response -------- */
+export const extractAuthProfile = (data) => {
+  let profile = data?.user ?? null;
+
+  if (!profile) {
+    const copy = { ...(data || {}) };
+    delete copy.token;
+    delete copy.user;
+
+    if (Object.keys(copy).length) {
+      profile = copy;
+    }
+  }
+
+  return profile;
+};
+
+/* -------- Get transactions by type (income or expense) -------- */
+export function getTransactionsByType(transactions = [], type) {
+  return transactions
+    .filter((transaction) => transaction.type === type)
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+}
+
+/* -------- Build transaction chart data -------- */
+export function buildTransactionChartData(
+  chartPoints = [],
+  transactions = [],
+  timeFrame,
+  key,
+) {
+  const data = chartPoints.map((point) => ({ ...point, [key]: 0 }));
+
+  transactions.forEach((transaction) => {
+    const transactionDate = new Date(transaction.date);
+
+    const point = data.find((item) =>
+      timeFrame === "daily"
+        ? item.hour === transactionDate.getHours()
+        : timeFrame === "yearly"
+          ? item.date.getMonth() === transactionDate.getMonth()
+          : item.date.getDate() === transactionDate.getDate() &&
+            item.date.getMonth() === transactionDate.getMonth(),
+    );
+
+    if (point) {
+      point[key] += Math.round(Number(transaction.amount));
+    }
+  });
+
+  return data;
+}
+
+/* -------- Calculate total amount from transactions -------- */
+export function calculateTotalAmount(transactions = []) {
+  return transactions.reduce(
+    (sum, transaction) => sum + Math.round(Number(transaction.amount || 0)),
+    0,
+  );
+}
+
+/* -------- Calculate average amount -------- */
+export function calculateAverageAmount(transactions = []) {
+  if (!transactions.length) return 0;
+  const total = calculateTotalAmount(transactions);
+  return Math.round(total / transactions.length);
+}
+
+/* -------- Build export data for transactions -------- */
+export function buildExportData(transactions = [], typeLabel) {
+  return transactions.map((transaction) => ({
+    Date: new Date(transaction.date).toLocaleDateString(),
+    Description: transaction.description,
+    Category: transaction.category,
+    Amount: transaction.amount,
+    Type: typeLabel,
+  }));
+}
+
+/* -------- Save auth data in storage -------- */
+export function persistUserAuth({ profile, token, rememberMe }) {
+  const storage = rememberMe ? localStorage : sessionStorage;
+  try {
+    if (token) {
+      storage.setItem("token", token);
+    }
+    if (profile) {
+      storage.setItem("user", JSON.stringify(profile));
+    }
+  } catch (error) {
+    console.error("Storage Error:", error);
   }
 }

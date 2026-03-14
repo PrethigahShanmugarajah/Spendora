@@ -1,4 +1,3 @@
-// Server / routes / incomeRouter.js
 import express from "express";
 import { authMiddleware } from "../middlewares/auth.js";
 import {

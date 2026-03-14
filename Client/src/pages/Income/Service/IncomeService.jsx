@@ -1,4 +1,3 @@
-// Client / src / pages / Income / Service / IncomeService.jsx
 import {
   downloadIncomeData,
   fetchIncomeOverview,
@@ -59,6 +58,6 @@ export async function deleteIncomeTransactionApi(id) {
 }
 
 /* -------- Download income data -------- */
-export async function downloadIncomeDataApi(counter = 0) {
-  return await downloadIncomeData(counter);
+export async function downloadIncomeDataApi(params = {}) {
+  return await downloadIncomeData(params);
 }

@@ -1,4 +1,3 @@
-// Client / src / services / mutations.js
 import { toast } from "react-toastify";
 import API_ROUTES from "../api/api_route";
 import api from "../api/axios";
@@ -7,11 +6,9 @@ import api from "../api/axios";
 export const addIncome = async (payload) => {
   try {
     const { data } = await api.post(API_ROUTES.INCOME.ADD, payload);
-    console.log("Add Income API Response:", data);
 
     if (data?.success) {
       toast.success(data?.message);
-      console.log("Add Income Success:", data?.message);
     } else {
       toast.warn(data?.message || "Add income with warning");
       console.warn(
@@ -33,11 +30,9 @@ export const addIncome = async (payload) => {
 export const addExpense = async (payload) => {
   try {
     const { data } = await api.post(API_ROUTES.EXPENSE.ADD, payload);
-    console.log("Add Expense API Response:", data);
 
     if (data?.success) {
       toast.success(data?.message);
-      console.log("Add Expense Success:", data?.message);
     } else {
       toast.warn(data?.message || "Add expense with warning");
       console.warn(
@@ -59,11 +54,9 @@ export const addExpense = async (payload) => {
 export const updateIncome = async (id, payload) => {
   try {
     const { data } = await api.put(API_ROUTES.INCOME.UPDATE(id), payload);
-    console.log("Update Income API Response:", data);
 
     if (data?.success) {
       toast.success(data?.message);
-      console.log("Update Income Success:", data?.message);
     } else {
       toast.warn(data?.message || "Update income with warning");
       console.warn(
@@ -85,11 +78,9 @@ export const updateIncome = async (id, payload) => {
 export const updateExpense = async (id, payload) => {
   try {
     const { data } = await api.put(API_ROUTES.EXPENSE.UPDATE(id), payload);
-    console.log("Update Expense API Response:", data);
 
     if (data?.success) {
       toast.success(data?.message);
-      console.log("Update Expense Success:", data?.message);
     } else {
       toast.warn(data?.message || "Update expense with warning");
       console.warn(
@@ -111,11 +102,9 @@ export const updateExpense = async (id, payload) => {
 export const deleteIncome = async (id) => {
   try {
     const { data } = await api.delete(API_ROUTES.INCOME.DELETE(id));
-    console.log("Delete Income API Response:", data);
 
     if (data?.success) {
       toast.success(data?.message);
-      console.log("Delete Income Success:", data?.message);
     } else {
       toast.warn(data?.message || "Delete income with warning");
       console.warn(
@@ -137,11 +126,9 @@ export const deleteIncome = async (id) => {
 export const deleteExpense = async (id) => {
   try {
     const { data } = await api.delete(API_ROUTES.EXPENSE.DELETE(id));
-    console.log("Delete Expense API Response:", data);
 
     if (data?.success) {
       toast.success(data?.message);
-      console.log("Delete Expense Success:", data?.message);
     } else {
       toast.warn(data?.message || "Delete expense with warning");
       console.warn(
@@ -163,11 +150,9 @@ export const deleteExpense = async (id) => {
 export const userLogin = async (payload) => {
   try {
     const { data } = await api.post(API_ROUTES.USER.LOGIN, payload);
-    console.log("User Login API Response:", data);
 
     if (data?.success) {
       toast.success(data?.message);
-      console.log("User Login Success:", data?.message);
     } else {
       toast.warn(data?.message || "User login with warning");
       console.warn(
@@ -189,11 +174,9 @@ export const userLogin = async (payload) => {
 export const userSignup = async (payload) => {
   try {
     const { data } = await api.post(API_ROUTES.USER.REGISTER, payload);
-    console.log("User Signup API Response:", data);
 
     if (data?.success) {
       toast.success(data?.message);
-      console.log("User Signup Success:", data?.message);
     } else {
       toast.warn(data?.message || "User signup with warning");
       console.warn(
@@ -215,11 +198,9 @@ export const userSignup = async (payload) => {
 export const updateProfile = async (profileData) => {
   try {
     const { data } = await api.put(API_ROUTES.USER.PROFILE, profileData);
-    console.log("Update Profile API Response:", data);
 
     if (data?.success) {
       toast.success(data?.message);
-      console.log("Update Profile Success:", data?.message);
     } else {
       toast.warn(data?.message || "Update profile with warning");
       console.warn(
@@ -241,11 +222,9 @@ export const updateProfile = async (profileData) => {
 export const changePassword = async (passwordData) => {
   try {
     const { data } = await api.put(API_ROUTES.USER.PASSWORD, passwordData);
-    console.log("Change Password API Response:", data);
 
     if (data?.success) {
       toast.success(data?.message);
-      console.log("Change Password Success:", data?.message);
     } else {
       toast.warn(data?.message || "Change password with warning");
       console.warn(

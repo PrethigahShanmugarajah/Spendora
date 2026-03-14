@@ -1,4 +1,3 @@
-// Client / src / pages / Dashboard / Components / DashboardHeader.jsx
 import { Plus } from "lucide-react";
 
 const DashboardHeader = ({ setShowModal, timeFrame, setTimeFrame }) => {

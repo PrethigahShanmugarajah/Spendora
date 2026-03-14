@@ -1,4 +1,3 @@
-// Server / models / expenseModel.js
 import mongoose from "mongoose";
 
 const expenseSchema = new mongoose.Schema(

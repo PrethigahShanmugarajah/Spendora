@@ -1,4 +1,3 @@
-// Client / src / components / Layout / Service / LayoutService.jsx
 import { fetchExpense, fetchIncome } from "../../../services/fetch";
 import {
   addExpense,

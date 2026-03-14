@@ -1,4 +1,3 @@
-// Server / routes / dashboardRouter.js
 import express from "express";
 import { authMiddleware } from "../middlewares/auth.js";
 import { getDashboardOverview } from "../controllers/dashboardController.js";

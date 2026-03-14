@@ -1,5 +1,3 @@
-// Client / src / utils / dashboardUtils.js
-
 /* -------- Convert date to ISO with current client time -------- */
 export function toIsoWithClientTime(dateValue) {
   if (!dateValue) {
@@ -18,19 +16,6 @@ export function toIsoWithClientTime(dateValue) {
   } catch (error) {
     return new Date().toISOString();
   }
-}
-
-/* -------- Check whether date is inside range -------- */
-export function isDateInRange(date, start, end) {
-  const transactionDate = new Date(date);
-  const startDate = new Date(start);
-  const endDate = new Date(end);
-
-  transactionDate.setHours(0, 0, 0, 0);
-  startDate.setHours(0, 0, 0, 0);
-  endDate.setHours(23, 59, 59, 999);
-
-  return transactionDate >= startDate && transactionDate <= endDate;
 }
 
 /* -------- Normalize recent dashboard transactions -------- */
@@ -87,12 +72,12 @@ export function buildOverviewMeta(data, recent) {
   };
 }
 
-/* -------- Build gauge max values -------- */
 export function getGaugeMaxValues(income, expenses, savings) {
+  const commonMax = Math.max(income, expenses, Math.abs(savings), 5000);
   return {
-    income: Math.max(income, 5000),
-    expenses: Math.max(expenses, 3000),
-    savings: Math.max(Math.abs(savings), 2000),
+    income: commonMax,
+    expenses: commonMax,
+    savings: commonMax,
   };
 }
 

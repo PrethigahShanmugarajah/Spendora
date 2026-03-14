@@ -1,18 +1,14 @@
-// Client / src / pages / Login / Service / LoginService.jsx
 import { fetchCurrentUser } from "../../../services/fetch";
 import { userLogin } from "../../../services/mutations";
-import {
-  extractLoginProfile,
-  getAuthStorage,
-  persistAuthData,
-} from "../../../utils/loginUtils";
+import { extractAuthProfile } from "../../../utils/helpers";
+import { getAuthStorage, persistAuthData } from "../../../utils/loginUtils";
 
 /* -------- Login user -------- */
 export async function loginUserApi({ email, password, rememberMe }) {
   const data = await userLogin({ email, password });
   const token = data?.token || null;
 
-  let profile = extractLoginProfile(data);
+  let profile = extractAuthProfile(data);
 
   if (!profile && token) {
     try {
@@ -22,7 +18,6 @@ export async function loginUserApi({ email, password, rememberMe }) {
       const profileResponse = await fetchCurrentUser();
       profile = profileResponse?.data || profileResponse?.user || { email };
     } catch (error) {
-      console.warn("Unable to retrieve the current user after login:", error);
       profile = { email };
     }
   }

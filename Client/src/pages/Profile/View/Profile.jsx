@@ -1,4 +1,3 @@
-// Client / src / pages / Profile / View / Profile.jsx
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PasswordChangePopup from "../Components/PasswordChangePopup";
@@ -144,7 +143,7 @@ const Profile = ({ onUpdateProfile, onLogout }) => {
               user={user}
               tempUser={tempUser}
               editMode={editMode}
-              loading={saveLoading}
+              loading={profileLoading || saveLoading}
               onEdit={() => setEditMode(true)}
               onInputChange={handleInputChange}
               onSave={handleSaveProfile}

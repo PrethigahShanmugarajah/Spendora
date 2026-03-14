@@ -1,5 +1,3 @@
-// Client / src / utils / profileUtils.js
-
 /* -------- Reset password form data -------- */
 export function getInitialPasswordData() {
   return {

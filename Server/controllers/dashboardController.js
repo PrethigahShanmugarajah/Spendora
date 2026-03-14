@@ -1,4 +1,3 @@
-// Server / controllers / dashboardController.js
 import incomeModel from "../models/incomeModel.js";
 import expenseModel from "../models/expenseModel.js";
 

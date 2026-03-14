@@ -1,5 +1,3 @@
-// Client / src / components / TimeFrame.jsx
-
 const TimeFrame = ({
   timeFrame,
   setTimeFrame,

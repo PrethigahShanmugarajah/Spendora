@@ -1,4 +1,3 @@
-// Client / src / pages / Profile / Components / AccountSecurityCard.jsx
 import { Lock } from "lucide-react";
 import { ClipLoader } from "react-spinners";
 

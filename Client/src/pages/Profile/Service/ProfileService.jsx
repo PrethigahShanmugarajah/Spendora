@@ -1,4 +1,3 @@
-// Client / src / pages / Profile / Service / ProfileService.jsx
 import { fetchCurrentUser } from "../../../services/fetch";
 import { changePassword, updateProfile } from "../../../services/mutations";
 import { getUpdatedProfileUser } from "../../../utils/profileUtils";

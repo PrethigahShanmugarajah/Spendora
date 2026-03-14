@@ -1,4 +1,3 @@
-// Client / src / components / TransactionItem.jsx
 import { useState } from "react";
 import { Banknote, Edit, Save, Trash2, X } from "lucide-react";
 import { CURRENCY } from "../utils/helpers";
@@ -200,7 +199,7 @@ const TransactionItem = ({
               </button>
 
               <button
-                onClick={() => onDelete(transaction.id)}
+                onClick={() => onDelete(transaction)}
                 className="p-2 rounded-lg text-red-600 hover:bg-red-100"
                 title="Delete"
               >

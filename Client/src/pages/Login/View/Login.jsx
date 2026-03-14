@@ -1,4 +1,3 @@
-// Client / src / pages / Login / View / Login.jsx
 import { useState } from "react";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";

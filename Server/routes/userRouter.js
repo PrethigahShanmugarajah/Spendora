@@ -1,4 +1,3 @@
-// Server / routes / userRouter.js
 import express from "express";
 import {
   changePassword,

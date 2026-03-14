@@ -1,32 +1,14 @@
 // Client / src / utils / signupUtils.js
+import { extractAuthProfile, persistUserAuth } from "./helpers";
 
 /* -------- Extract user profile from signup response -------- */
 export const extractSignupProfile = (data) => {
-  let profile = data?.user ?? null;
-
-  if (!profile) {
-    const copy = { ...(data || {}) };
-    delete copy.token;
-    delete copy.user;
-
-    if (Object.keys(copy).length) {
-      profile = copy;
-    }
-  }
-
-  return profile;
+  return extractAuthProfile(data);
 };
 
 /* -------- Persist auth -------- */
 export const persistSignupAuth = ({ profile, token, rememberMe }) => {
-  const storage = rememberMe ? localStorage : sessionStorage;
-
-  try {
-    if (token) storage.setItem("token", token);
-    if (profile) storage.setItem("user", JSON.stringify(profile));
-  } catch (error) {
-    console.error("Storage Error:", error);
-  }
+  persistUserAuth({ profile, token, rememberMe });
 };
 
 /* -------- Validate signup form -------- */

@@ -1,4 +1,3 @@
-// Client / src / App.jsx
 import { useEffect, useState } from "react";
 import {
   Navigate,
@@ -217,6 +216,7 @@ const App = () => {
           element={
             <ProtectedRoute user={user}>
               <Layout
+                user={user}
                 onLogout={handleLogout}
                 transactions={transactions}
                 addTransaction={addTransaction}

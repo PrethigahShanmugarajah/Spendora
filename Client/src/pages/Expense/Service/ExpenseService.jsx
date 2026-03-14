@@ -1,4 +1,3 @@
-// Client / src / pages / Expense / Service / ExpenseService.jsx
 import {
   downloadExpenseData,
   fetchExpenseOverview,
@@ -59,6 +58,6 @@ export async function deleteExpenseTransactionApi(id) {
 }
 
 /* -------- Download expense data -------- */
-export async function downloadExpenseDataApi(counter = 0) {
-  return await downloadExpenseData(counter);
+export async function downloadExpenseDataApi(params = {}) {
+  return await downloadExpenseData(params);
 }

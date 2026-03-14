@@ -1,6 +1,5 @@
-// Client / src / pages / Profile / Components / PersonalInfoCard.jsx
 import { User } from "lucide-react";
-import { ClipLoader } from "react-spinners";
+import { BeatLoader, ClipLoader } from "react-spinners";
 import { InputField } from "../../../components/FormField/InputField";
 
 const PersonalInfoCard = ({
@@ -96,12 +95,16 @@ const PersonalInfoCard = ({
         <div className="space-y-4">
           <div>
             <p className="text-sm text-gray-500  block mb-1">Full Name</p>
-            <p className="font-medium text-gray-800">{user?.name}</p>
+            <p className="font-medium text-gray-800 min-h-6 flex items-center">
+              {loading ? <BeatLoader size={6} /> : user?.name}
+            </p>
           </div>
 
           <div>
             <p className="text-sm text-gray-500  block mb-1">Email Address</p>
-            <p className="font-medium text-gray-800">{user?.email}</p>
+            <p className="font-medium text-gray-800 min-h-6 flex items-center">
+              {loading ? <BeatLoader size={6} /> : user?.email}
+            </p>
           </div>
         </div>
       )}

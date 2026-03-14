@@ -1,4 +1,3 @@
-// Client / src / pages / Dashboard / Components / DashboardSummaryCards.jsx
 import {
   ArrowDown,
   BarChart2,
@@ -9,6 +8,7 @@ import {
 } from "lucide-react";
 import FinancialCard from "../../../components/FinancialCard";
 import { CURRENCY } from "../../../utils/helpers";
+import { BeatLoader } from "react-spinners";
 
 const DashboardSummaryCards = ({
   displayIncome,
@@ -18,7 +18,23 @@ const DashboardSummaryCards = ({
   prevTimeFrameRange,
   timeFrameRange,
   overviewMeta,
+  loading = false,
 }) => {
+  const renderValue = (value, color = "#8B5CF6") => {
+    if (loading) {
+      return <BeatLoader size={6} color={color} />;
+    }
+
+    return value;
+  };
+
+  const renderMeta = (content, color = "#8B5CF6") => {
+    if (loading) {
+      return <BeatLoader size={4} color={color} />;
+    }
+
+    return content;
+  };
   return (
     <div className="grid grid-cols-1 lg:-mx-3 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-5 mb-8">
       <FinancialCard
@@ -28,8 +44,11 @@ const DashboardSummaryCards = ({
           </div>
         }
         label="Total Balance"
-        value={`${CURRENCY} ${Math.round(displayIncome - displayExpenses).toLocaleString()}`}
-        additionalContent={
+        value={renderValue(
+          `${CURRENCY} ${Math.round(displayIncome - displayExpenses).toLocaleString()}`,
+          "#059669",
+        )}
+        additionalContent={renderMeta(
           <div className="flex items-center gap-2 mt-2 text-sm">
             <span className="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg text-xs">
               + {CURRENCY} {Math.round(displayIncome).toLocaleString()}
@@ -38,8 +57,9 @@ const DashboardSummaryCards = ({
             <span className="bg-amber-100 text-amber-800 px-1 py-1 rounded-lg text-xs">
               - {CURRENCY} {Math.round(displayExpenses).toLocaleString()}
             </span>
-          </div>
-        }
+          </div>,
+          "#059669",
+        )}
       />
 
       <FinancialCard
@@ -49,10 +69,13 @@ const DashboardSummaryCards = ({
           </div>
         }
         label={`${timeFrameRange.label} Expenses`}
-        value={`${CURRENCY} ${Math.round(displayExpenses).toLocaleString()}`}
-        additionalContent={
+        value={renderValue(
+          `${CURRENCY} ${Math.round(displayExpenses).toLocaleString()}`,
+          "#D97706",
+        )}
+        additionalContent={renderMeta(
           <div
-            className={`mt-2 text-xs text-amber-600 flex items-center gap-2 ${
+            className={`mt-2 text-xs flex items-center gap-2 ${
               expenseChange >= 0 ? "text-amber-600" : "text-emerald-600"
             }`}
           >
@@ -67,8 +90,9 @@ const DashboardSummaryCards = ({
               {expenseChange >= 0 ? "increase" : "decrease"} from{" "}
               {prevTimeFrameRange.label}
             </span>
-          </div>
-        }
+          </div>,
+          "#D97706",
+        )}
       />
 
       <FinancialCard
@@ -78,8 +102,11 @@ const DashboardSummaryCards = ({
           </div>
         }
         label={`${timeFrameRange.label} Savings`}
-        value={`${CURRENCY} ${Math.round(displaySavings).toLocaleString()}`}
-        additionalContent={
+        value={renderValue(
+          `${CURRENCY} ${Math.round(displaySavings).toLocaleString()}`,
+          "#7C3AED",
+        )}
+        additionalContent={renderMeta(
           <div className="mt-2 text-xs text-violet-600 flex items-center gap-2">
             <div className="flex items-center gap-1">
               <BarChart2 className="w-4 h-4" />
@@ -103,8 +130,9 @@ const DashboardSummaryCards = ({
                 {overviewMeta.savingsRate}%
               </span>
             )}
-          </div>
-        }
+          </div>,
+          "#7C3AED",
+        )}
       />
     </div>
   );

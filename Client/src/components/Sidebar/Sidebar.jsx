@@ -1,4 +1,3 @@
-// Client / src / components / Sidebar / Sidebar.jsx
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";

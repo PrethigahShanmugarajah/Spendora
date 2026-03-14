@@ -1,5 +1,3 @@
-// Client / src / components / FinancialCard.jsx
-
 const FinancialCard = ({
   icon,
   label,

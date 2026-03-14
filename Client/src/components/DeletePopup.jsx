@@ -1,4 +1,3 @@
-// Client / src / components / DeletePopup.jsx
 import { X } from "lucide-react";
 import { ClipLoader } from "react-spinners";
 

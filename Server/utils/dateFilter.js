@@ -1,5 +1,3 @@
-// Server / utils / dateFilter.js
-
 const getDateRange = (range) => {
   const now = new Date();
   let start;

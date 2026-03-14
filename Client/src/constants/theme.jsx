@@ -1,16 +1,8 @@
-// Client / src / constants / theme.jsx
 import {
   Utensils,
   Home,
   Car,
   ShoppingCart,
-  Gift,
-  TrendingUp,
-  TrendingDown,
-  DollarSign,
-  BarChart2,
-  ArrowUp,
-  FileText,
   Briefcase,
   Laptop,
   Building2,
@@ -79,27 +71,6 @@ export const EXPENSE_COLORS = [
   "#FDEAC0",
 ];
 
-export const CATEGORY_ICONS_Inc = {
-  Salary: <TrendingUp className="w-4 h-4" />,
-  Freelance: <BarChart2 className="w-4 h-4" />,
-  Investment: <ArrowUp className="w-4 h-4" />,
-  Bonus: <FileText className="w-4 h-4" />,
-  Other: <DollarSign className="w-4 h-4" />,
-};
-
-export const CATEGORY_ICONS = {
-  Food: <Utensils className="w-4 h-4" />,
-  Housing: <Home className="w-4 h-4" />,
-  Transport: <Car className="w-4 h-4" />,
-  Shopping: <ShoppingCart className="w-4 h-4" />,
-  Entertainment: <Gift className="w-4 h-4" />,
-  Utilities: <Home className="w-4 h-4" />,
-  Healthcare: <Gift className="w-4 h-4" />,
-  Salary: <TrendingUp className="w-4 h-4" />,
-  Freelance: <TrendingDown className="w-4 h-4" />,
-  Other: <DollarSign className="w-4 h-4" />,
-};
-
 export const INCOME_CATEGORY_ICONS = {
   Salary: <Briefcase className="w-5 h-5 text-emerald-600" />,
   Freelance: <Laptop className="w-5 h-5 text-emerald-600" />,
@@ -118,23 +89,4 @@ export const EXPENSE_CATEGORY_ICONS = {
   Transport: <Car className="w-5 h-5 text-amber-600" />,
   Healthcare: <HeartPulse className="w-5 h-5 text-amber-600" />,
   Other: <Coins className="w-5 h-5 text-amber-600" />,
-};
-
-export const colorClasses = {
-  income: {
-    bg: "bg-purple-100",
-    text: "text-purple-600",
-    border: "border-purple-200",
-    ring: "ring-purple-500",
-    button: "bg-purple-500 hover:bg-purple-600 text-white",
-    iconBg: "bg-purple-100 text-purple-600",
-  },
-  expense: {
-    bg: "bg-amber-100",
-    text: "text-amber-600",
-    border: "border-amber-200",
-    ring: "ring-amber-500",
-    button: "bg-amber-500 hover:bg-amber-600 text-white",
-    iconBg: "bg-amber-100 text-amber-600",
-  },
 };

@@ -1,4 +1,3 @@
-// Client / src / components / FilterSection.jsx
 import { Download } from "lucide-react";
 import { ClipLoader } from "react-spinners";
 import { SelectInput } from "./FormField/SelectInput";

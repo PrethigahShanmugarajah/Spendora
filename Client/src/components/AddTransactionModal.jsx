@@ -1,4 +1,3 @@
-// Client / src / components / AddTransactionModal.jsx
 import { X } from "lucide-react";
 import { InputField } from "./FormField/InputField";
 import { SelectInput } from "./FormField/SelectInput";

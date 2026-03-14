@@ -1,4 +1,3 @@
-// Client / src / pages / Dashboard / View / Dashboard.jsx
 import { useEffect, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import {
@@ -6,6 +5,7 @@ import {
   CURRENCY,
   getPreviousTimeFrameRange,
   getTimeFrameRange,
+  isDateInRange,
 } from "../../../utils/helpers";
 import {
   DollarSign,
@@ -27,7 +27,6 @@ import {
   getDisplaySummaryValues,
   getRecentTransactionsByType,
   getTransactionListForDisplay,
-  isDateInRange,
 } from "../../../utils/dashboardUtils";
 import {
   addDashboardTransactionApi,
@@ -51,6 +50,11 @@ const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [gaugeData, setGaugeData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [gaugeLoading, setGaugeLoading] = useState(false);
+  const [distributionLoading, setDistributionLoading] = useState(false);
+  const [transactionSectionLoading, setTransactionSectionLoading] =
+    useState(false);
   const [overviewMeta, setOverviewMeta] = useState({});
   const [showAllIncome, setShowAllIncome] = useState(false);
   const [showAllExpense, setShowAllExpense] = useState(false);
@@ -194,7 +198,11 @@ const Dashboard = () => {
 
   const fetchDashboardOverviewService = async () => {
     try {
-      setLoading(true);
+      setSummaryLoading(true);
+      setGaugeLoading(true);
+      setDistributionLoading(true);
+      setTransactionSectionLoading(true);
+
       const result = await fetchDashboardOverviewApi(timeFrame);
       if (!result?.overviewMeta) return;
       setOverviewMeta((prev) => ({
@@ -207,7 +215,10 @@ const Dashboard = () => {
     } catch (error) {
       //
     } finally {
-      setLoading(false);
+      setSummaryLoading(false);
+      setGaugeLoading(false);
+      setDistributionLoading(false);
+      setTransactionSectionLoading(false);
     }
   };
 
@@ -254,9 +265,9 @@ const Dashboard = () => {
         prevTimeFrameRange={prevTimeFrameRange}
         timeFrameRange={timeFrameRange}
         overviewMeta={overviewMeta}
+        loading={summaryLoading}
       />
 
-      {/* -------- Gauges -------- */}
       <div className="grid grid-cols-1 -mx-5 xl:-mx-5 md:grid-cols-3 md:gap-13 lg:gap-3 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
         {gaugeData.map((gauge) => (
           <GaugeCard
@@ -264,6 +275,7 @@ const Dashboard = () => {
             gauge={gauge}
             colorInfo={GAUGE_COLORS[gauge.name]}
             timeFrameLabel={timeFrameRange.label}
+            loading={gaugeLoading}
           />
         ))}
       </div>
@@ -275,6 +287,7 @@ const Dashboard = () => {
         colors={EXPENSE_CHART_COLORS}
         iconColor="text-amber-500"
         tooltipLabel="Expense"
+        loading={distributionLoading}
       />
 
       <DistributionChart
@@ -284,6 +297,7 @@ const Dashboard = () => {
         colors={INCOME_CHART_COLORS}
         iconColor="text-emerald-500"
         tooltipLabel="Income"
+        loading={distributionLoading}
       />
 
       <div className="grid grid-cols-1 gap-6">
@@ -309,6 +323,7 @@ const Dashboard = () => {
           currency={CURRENCY}
           timeFrameLabel={timeFrameRange.label}
           categoryIcons={INCOME_CATEGORY_ICONS}
+          loading={transactionSectionLoading}
         />
 
         {/* -------- Expense Column -------- */}
@@ -332,6 +347,7 @@ const Dashboard = () => {
           currency={CURRENCY}
           timeFrameLabel={timeFrameRange.label}
           categoryIcons={EXPENSE_CATEGORY_ICONS}
+          loading={transactionSectionLoading}
         />
       </div>
 

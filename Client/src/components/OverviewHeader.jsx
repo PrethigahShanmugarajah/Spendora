@@ -1,4 +1,3 @@
-// Client / src / components / OverviewHeader.jsx
 import { ClipLoader } from "react-spinners";
 import TimeFrame from "./TimeFrame";
 import { Plus } from "lucide-react";

@@ -1,5 +1,3 @@
-// Client / src / utils / layoutUtils.js
-
 /* -------- Filter transactions by timeframe -------- */
 export const filterTransactions = (transactions, frame) => {
   const now = new Date();
@@ -53,6 +51,7 @@ export const normalizeTransactions = (incomes = [], expenses = []) => {
 /* -------- Calculate dashboard stats -------- */
 export const calculateTransactionStats = (transactions = []) => {
   const now = new Date();
+
   const thirtyDaysAgo = new Date(now);
   thirtyDaysAgo.setDate(now.getDate() - 30);
 
@@ -91,9 +90,21 @@ export const calculateTransactionStats = (transactions = []) => {
     return date >= last60DaysAgo && date < thirtyDaysAgo;
   });
 
+  const previous30DaysIncome = previous30DaysTransactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + Number(t.amount), 0);
+
   const previous30DaysExpenses = previous30DaysTransactions
     .filter((t) => t.type === "expense")
     .reduce((sum, t) => sum + Number(t.amount), 0);
+
+  const incomeChange =
+    previous30DaysIncome > 0
+      ? Math.round(
+          ((last30DaysIncome - previous30DaysIncome) / previous30DaysIncome) *
+            100,
+        )
+      : 0;
 
   const expenseChange =
     previous30DaysExpenses > 0
@@ -114,6 +125,7 @@ export const calculateTransactionStats = (transactions = []) => {
     allTimeSavings: allTimeIncome - allTimeExpenses,
     last30DaysCount: last30DaysTransactions.length,
     savingsRate,
+    incomeChange,
     expenseChange,
   };
 };

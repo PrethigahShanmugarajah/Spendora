@@ -1,4 +1,3 @@
-// Server / controllers / expenseController.js
 import expenseModel from "../models/expenseModel.js";
 import XLSX from "xlsx";
 import getDateRange from "../utils/dateFilter.js";
@@ -8,14 +7,6 @@ export async function addExpense(req, res) {
   try {
     const userId = req.user._id;
     const { description, amount, category, date } = req.body;
-
-    // if (!description || !amount || !category || !date) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message:
-    //       "All fields (description, amount, category, date) are required.",
-    //   });
-    // }
 
     if (!description) {
       return res.status(400).json({
@@ -80,6 +71,11 @@ export async function getExpenses(req, res) {
     const userId = req.user._id;
     const expenses = await expenseModel.find({ userId }).sort({ date: -1 });
 
+    const totalExpense = expenses.reduce(
+      (sum, expense) => sum + (expense.amount || 0),
+      0,
+    );
+
     return res.status(200).json({
       success: true,
       message: expenses.length
@@ -87,6 +83,7 @@ export async function getExpenses(req, res) {
         : "No expenses found yet.",
       expenses,
       length: expenses.length,
+      totalExpense,
     });
   } catch (error) {
     console.error(
@@ -149,13 +146,6 @@ export async function updateExpense(req, res) {
     const { id } = req.params;
     const userId = req.user._id;
     const { description, amount } = req.body;
-
-    // if (!description || !amount) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Both description and amount are required to update expense.",
-    //   });
-    // }
 
     if (!description) {
       return res.status(400).json({
@@ -244,40 +234,126 @@ export async function deleteExpense(req, res) {
 export async function downloadExpenseExcel(req, res) {
   try {
     const userId = req.user._id;
-    const expenses = await expenseModel.find({ userId }).sort({ date: -1 });
+
+    const filter = String(req.query.filter || "all");
+    const range = String(req.query.range || "monthly");
+    const counter = Number.parseInt(req.query.counter, 10) || 0;
+
+    const query = { userId };
+
+    const categoryFilters = new Set([
+      "Groceries",
+      "Dining",
+      "Rent",
+      "Utilities",
+      "Transport",
+      "Healthcare",
+      "Other",
+    ]);
+
+    const now = new Date();
+    let startDate = null;
+    let endDate = null;
+
+    if (filter === "month") {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      endDate = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        999,
+      );
+    } else if (filter === "year") {
+      startDate = new Date(now.getFullYear(), 0, 1);
+      endDate = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+    } else {
+      if (range === "weekly") {
+        const startOfWeek = new Date(now);
+        const day = startOfWeek.getDay();
+        const diff = day === 0 ? -6 : 1 - day;
+
+        startOfWeek.setDate(startOfWeek.getDate() + diff);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(endOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+
+        startDate = startOfWeek;
+        endDate = endOfWeek;
+      } else if (range === "monthly") {
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        endDate = new Date(
+          now.getFullYear(),
+          now.getMonth() + 1,
+          0,
+          23,
+          59,
+          59,
+          999,
+        );
+      } else if (range === "yearly") {
+        startDate = new Date(now.getFullYear(), 0, 1);
+        endDate = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+      }
+    }
+
+    if (categoryFilters.has(filter)) {
+      query.category = filter;
+    }
+
+    if (startDate && endDate) {
+      query.date = {
+        $gte: startDate,
+        $lte: endDate,
+      };
+    }
+
+    const expenses = await expenseModel.find(query).sort({ date: -1 });
 
     if (!expenses.length) {
       return res.status(404).json({
         success: false,
-        message: "No expense data found to download.",
+        message: "No expense data found to download for the selected filter.",
       });
     }
 
-    const plainData = expenses.map((inc) => ({
-      Description: inc.description,
-      Amount: inc.amount,
-      Category: inc.category,
-      Date: new Date(inc.date).toLocaleDateString(),
+    const plainData = expenses.map((exp) => ({
+      Description: exp.description,
+      Amount: exp.amount,
+      Category: exp.category,
+      Date: new Date(exp.date).toLocaleDateString(),
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(plainData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "ExpenseData");
 
-    // XLSX.writeFile(workbook, "expense_details.xlsx");
-    // res.download("expense_details.xlsx");
-
     const excelBuffer = XLSX.write(workbook, {
       type: "buffer",
       bookType: "xlsx",
     });
 
-    const baseFileName = "Expense_Details";
-    const counter = Number.parseInt(req.query.counter, 10) || 0;
+    const safeFilter =
+      filter === "all" ? "All_Transactions" : filter.replace(/\s+/g, "_");
+    const safeRange = range.replace(/\s+/g, "_");
+    const timeStamp = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace(/[:T]/g, "-");
+
+    const baseFileName = `Expense_Details_${safeFilter}_${safeRange}_${timeStamp}`;
     const fileName =
       counter > 0 ? `${baseFileName}(${counter}).xlsx` : `${baseFileName}.xlsx`;
 
     res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    res.setHeader(
+      "Access-Control-Expose-Headers",
+      "Content-Disposition, X-Success, X-Message",
+    );
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

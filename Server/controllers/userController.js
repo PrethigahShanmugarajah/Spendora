@@ -1,4 +1,3 @@
-// Server / controllers / userController.js
 import validator from "validator";
 import userModel from "../models/userModel.js";
 import bcrypt from "bcryptjs";
@@ -14,13 +13,6 @@ const createToken = (userId) =>
 export async function registerUser(req, res) {
   try {
     const { name, email, password } = req.body;
-
-    // if (!name || !email || !password) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "All fields (name, email, and password) are required.",
-    //   });
-    // }
 
     if (!name) {
       return res.status(400).json({
@@ -49,13 +41,6 @@ export async function registerUser(req, res) {
         message: "Please provide a valid email address.",
       });
     }
-
-    // if (password.length < 8) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Password must be at least 8 characters long.",
-    //   });
-    // }
 
     if (password.length < 8) {
       return res.status(400).json({
@@ -132,13 +117,6 @@ export async function registerUser(req, res) {
 export async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
-
-    // if (!email || !password) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Email and password are required.",
-    //   });
-    // }
 
     if (!email) {
       return res.status(400).json({
@@ -229,13 +207,6 @@ export async function updateProfile(req, res) {
   try {
     const { name, email } = req.body;
 
-    // if (!name || !email || !validator.isEmail(email)) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Name and a valid email are required.",
-    //   });
-    // }
-
     if (!name) {
       return res.status(400).json({
         success: false,
@@ -298,13 +269,6 @@ export async function updateProfile(req, res) {
 export async function changePassword(req, res) {
   try {
     const { currentPassword, newPassword } = req.body;
-    // if (!currentPassword || !newPassword || newPassword.length < 8) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message:
-    //       "Both current and new passwords are required. New password must be at least 8 characters long.",
-    //   });
-    // }
 
     if (!currentPassword) {
       return res.status(400).json({

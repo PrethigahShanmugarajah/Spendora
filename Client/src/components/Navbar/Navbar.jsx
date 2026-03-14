@@ -1,4 +1,3 @@
-// Client / src / components / Navbar / Navbar.jsx
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "../../assets/assets";
@@ -11,7 +10,6 @@ const Navbar = ({ user: propUser, onLogout }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [localUser, setLocalUser] = useState(null);
 
-  // const user = propUser || { name: "", email: "" };
   const user = propUser || localUser || { name: "", email: "" };
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);

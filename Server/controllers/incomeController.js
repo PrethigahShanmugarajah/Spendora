@@ -1,4 +1,3 @@
-// Server / controllers / incomeController.js
 import incomeModel from "../models/incomeModel.js";
 import XLSX from "xlsx";
 import getDateRange from "../utils/dateFilter.js";
@@ -8,14 +7,6 @@ export async function addIncome(req, res) {
   try {
     const userId = req.user._id;
     const { description, amount, category, date } = req.body;
-
-    // if (!description || !amount || !category || !date) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message:
-    //       "All fields (description, amount, category, date) are required.",
-    //   });
-    // }
 
     if (!description) {
       return res.status(400).json({
@@ -77,6 +68,11 @@ export async function getIncomes(req, res) {
     const userId = req.user._id;
     const incomes = await incomeModel.find({ userId }).sort({ date: -1 });
 
+    const totalIncome = incomes.reduce(
+      (sum, income) => sum + (income.amount || 0),
+      0,
+    );
+
     return res.status(200).json({
       success: true,
       message: incomes.length
@@ -84,6 +80,7 @@ export async function getIncomes(req, res) {
         : "No incomes found yet.",
       incomes,
       length: incomes.length,
+      totalIncome,
     });
   } catch (error) {
     console.error(
@@ -143,13 +140,6 @@ export async function updateIncome(req, res) {
     const { id } = req.params;
     const userId = req.user._id;
     const { description, amount } = req.body;
-
-    // if (!description || !amount) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Both description and amount are required to update income.",
-    //   });
-    // }
 
     if (!description) {
       return res.status(400).json({
@@ -237,12 +227,90 @@ export async function deleteIncome(req, res) {
 export async function downloadIncomeExcel(req, res) {
   try {
     const userId = req.user._id;
-    const incomes = await incomeModel.find({ userId }).sort({ date: -1 });
+
+    const filter = String(req.query.filter || "all");
+    const range = String(req.query.range || "monthly");
+    const counter = Number.parseInt(req.query.counter, 10) || 0;
+
+    const query = { userId };
+
+    const categoryFilters = new Set([
+      "Salary",
+      "Freelance",
+      "Business",
+      "Tuition",
+      "Rental",
+      "Bank Interest",
+      "Other",
+    ]);
+
+    const now = new Date();
+    let startDate = null;
+    let endDate = null;
+
+    if (filter === "month") {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      endDate = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        999,
+      );
+    } else if (filter === "year") {
+      startDate = new Date(now.getFullYear(), 0, 1);
+      endDate = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+    } else {
+      if (range === "weekly") {
+        const startOfWeek = new Date(now);
+        const day = startOfWeek.getDay();
+        const diff = day === 0 ? -6 : 1 - day;
+
+        startOfWeek.setDate(startOfWeek.getDate() + diff);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(endOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+
+        startDate = startOfWeek;
+        endDate = endOfWeek;
+      } else if (range === "monthly") {
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        endDate = new Date(
+          now.getFullYear(),
+          now.getMonth() + 1,
+          0,
+          23,
+          59,
+          59,
+          999,
+        );
+      } else if (range === "yearly") {
+        startDate = new Date(now.getFullYear(), 0, 1);
+        endDate = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+      }
+    }
+
+    if (categoryFilters.has(filter)) {
+      query.category = filter;
+    }
+
+    if (startDate && endDate) {
+      query.date = {
+        $gte: startDate,
+        $lte: endDate,
+      };
+    }
+
+    const incomes = await incomeModel.find(query).sort({ date: -1 });
 
     if (!incomes.length) {
       return res.status(404).json({
         success: false,
-        message: "No income data found to download.",
+        message: "No income data found to download for the selected filter.",
       });
     }
 
@@ -257,20 +325,28 @@ export async function downloadIncomeExcel(req, res) {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "IncomeData");
 
-    // XLSX.writeFile(workbook, "income_details.xlsx");
-    // res.download("income_details.xlsx");
-
     const excelBuffer = XLSX.write(workbook, {
       type: "buffer",
       bookType: "xlsx",
     });
 
-    const baseFileName = "Income_Details";
-    const counter = Number.parseInt(req.query.counter, 10) || 0;
+    const safeFilter =
+      filter === "all" ? "All_Transactions" : filter.replace(/\s+/g, "_");
+    const safeRange = range.replace(/\s+/g, "_");
+    const timeStamp = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace(/[:T]/g, "-");
+
+    const baseFileName = `Income_Details_${safeFilter}_${safeRange}_${timeStamp}`;
     const fileName =
       counter > 0 ? `${baseFileName}(${counter}).xlsx` : `${baseFileName}.xlsx`;
 
     res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    res.setHeader(
+      "Access-Control-Expose-Headers",
+      "Content-Disposition, X-Success, X-Message",
+    );
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

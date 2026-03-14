@@ -1,10 +1,11 @@
-// Client / src / pages / Income / View / Income.jsx
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useOutletContext } from "react-router-dom";
 import {
   exportToExcel,
   generateChartPoints,
+  getFilteredTransactions,
   getTimeFrameRange,
+  getTimeFrameTransactions,
 } from "../../../utils/helpers";
 import AddTransactionModal from "../../../components/AddTransactionModal";
 import { toast } from "react-toastify";
@@ -13,9 +14,7 @@ import {
   buildIncomeExportData,
   calculateAverageIncome,
   calculateTotalIncome,
-  getFilteredTransactions,
   getIncomeTransactions,
-  getTimeFrameTransactions,
 } from "../../../utils/incomeUtils";
 import {
   addIncomeTransactionApi,
@@ -28,9 +27,9 @@ import DeletePopup from "../../../components/DeletePopup";
 import TrendChart from "../../../components/TrendChart";
 import { INCOME_CATEGORY_ICONS, INCOME_COLORS } from "../../../constants/theme";
 import OverviewHeader from "../../../components/OverviewHeader";
-import SummaryCards from "../../../components/SummaryCards";
 import { TrendingUp } from "lucide-react";
 import TransactionsSection from "../../../components/TransactionsSection";
+import OverviewSummaryCards from "../../../components/OverviewSummaryCards";
 
 const Income = () => {
   const {
@@ -71,6 +70,7 @@ const Income = () => {
     id: null,
     item: "",
   });
+  const [overviewLoading, setOverviewLoading] = useState(false);
 
   const timeFrameRange = useMemo(
     () => getTimeFrameRange(timeFrame, null),
@@ -105,6 +105,7 @@ const Income = () => {
 
   const fetchIncomeOverviewService = useCallback(
     async (range = timeFrame ?? "monthly") => {
+      setOverviewLoading(true);
       try {
         const overviewData = await fetchIncomeOverviewApi(range);
         if (overviewData) {
@@ -112,6 +113,8 @@ const Income = () => {
         }
       } catch (error) {
         //
+      } finally {
+        setOverviewLoading(false);
       }
     },
     [timeFrame],
@@ -191,12 +194,11 @@ const Income = () => {
     timeFrame,
   ]);
 
-  const openDeletePopup = useCallback((id, item = "this income") => {
-    if (!id) return;
+  const handleOpenDeletePopup = useCallback((transaction) => {
     setDeletePopup({
       open: true,
-      id,
-      item,
+      id: transaction.id,
+      item: transaction.description || "this income",
     });
   }, []);
 
@@ -228,16 +230,30 @@ const Income = () => {
   const handleExport = useCallback(async () => {
     try {
       setExportLoading(true);
-      const res = await downloadIncomeDataApi(0);
+
+      const res = await downloadIncomeDataApi({
+        counter: 0,
+        filter,
+        range: timeFrame,
+      });
+
       const blob = new Blob([res.data], {
         type: res.headers["content-type"] || "application/octet-stream",
       });
-      const disposition = res.headers["content-disposition"];
+
+      const disposition =
+        res.headers["content-disposition"] ||
+        res.headers["Content-Disposition"];
       let filename = "Income_Details.xlsx";
 
       if (disposition) {
-        const match = disposition.match(/filename="?(.+)"?/);
-        if (match && match[1]) filename = match[1];
+        const match =
+          disposition.match(/filename="([^"]+)"/) ||
+          disposition.match(/filename=([^;]+)/);
+
+        if (match && (match[1] || match[2])) {
+          filename = (match[1] || match[2]).trim();
+        }
       }
 
       const link = document.createElement("a");
@@ -246,12 +262,13 @@ const Income = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(link.href);
     } catch (error) {
       try {
         const exportData = buildIncomeExportData(filteredTransactions);
         exportToExcel(
           exportData,
-          `income_${new Date().toISOString().slice(0, 10)}`,
+          `income_${filter}_${new Date().toISOString().slice(0, 10)}`,
         );
       } catch (error) {
         console.error("The fallback export operation failed:", error);
@@ -262,7 +279,7 @@ const Income = () => {
     } finally {
       setExportLoading(false);
     }
-  }, [filteredTransactions]);
+  }, [filteredTransactions, filter, timeFrame]);
 
   return (
     <div className="space-y-4 md:space-y-6 p-3 md:p-4 max-w-7xl mx-auto">
@@ -281,7 +298,7 @@ const Income = () => {
         timeFrameColor="emerald"
       />
 
-      <SummaryCards
+      <OverviewSummaryCards
         totalValue={totalIncome}
         averageValue={averageIncome}
         transactionsCount={transactionsCount}
@@ -289,6 +306,7 @@ const Income = () => {
         filter={filter}
         type="income"
         TrendIcon={TrendingUp}
+        loading={overviewLoading}
       />
 
       <TrendChart
@@ -301,6 +319,7 @@ const Income = () => {
         colors={INCOME_COLORS}
         iconColor="text-emerald-500"
         referenceLineColor="#10B981"
+        loading={overviewLoading}
       />
 
       <TransactionsSection
@@ -330,8 +349,9 @@ const Income = () => {
         editForm={editForm}
         setEditForm={setEditForm}
         handleEditTransaction={handleEditTransaction}
-        handleDeleteTransaction={handleDeleteTransaction}
-        loading={loading}
+        handleDeleteTransaction={handleOpenDeletePopup}
+        loading={overviewLoading}
+        actionLoading={loading}
         setEditingId={setEditingId}
         setShowModal={setShowModal}
         categoryIcons={INCOME_CATEGORY_ICONS}

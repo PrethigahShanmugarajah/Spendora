@@ -1,4 +1,3 @@
-// Client / src / services / fetch.js
 import { toast } from "react-toastify";
 import API_ROUTES from "../api/api_route";
 import api from "../api/axios";
@@ -7,12 +6,8 @@ import api from "../api/axios";
 export const fetchCurrentUser = async () => {
   try {
     const { data } = await api.get(API_ROUTES.USER.PROFILE);
-    console.log("Fetch Current User API Response:", data);
 
-    if (data?.success) {
-      // toast.success(data?.message);
-      console.log("Fetch Current User Success:", data?.message);
-    } else {
+    if (!data?.success) {
       toast.warn(data?.message || "Fetch current user with warning");
       console.warn(
         "Fetch Current User Warning:",
@@ -33,12 +28,8 @@ export const fetchCurrentUser = async () => {
 export const fetchIncome = async () => {
   try {
     const { data } = await api.get(API_ROUTES.INCOME.GET);
-    console.log("Fetch Income API Response:", data);
 
-    if (data?.success) {
-      // toast.success(data?.message);
-      console.log("Fetch Income Success:", data?.message);
-    } else {
+    if (!data?.success) {
       toast.warn(data?.message || "Fetch income with warning");
       console.warn(
         "Fetch Income Warning:",
@@ -59,12 +50,8 @@ export const fetchIncome = async () => {
 export const fetchExpense = async () => {
   try {
     const { data } = await api.get(API_ROUTES.EXPENSE.GET);
-    console.log("Fetch Expense API Response:", data);
 
-    if (data?.success) {
-      // toast.success(data?.message);
-      console.log("Fetch Expense Success:", data?.message);
-    } else {
+    if (!data?.success) {
       toast.warn(data?.message || "Fetch expense with warning");
       console.warn(
         "Fetch Expense Warning:",
@@ -85,12 +72,8 @@ export const fetchExpense = async () => {
 export const fetchDashboardOverview = async () => {
   try {
     const { data } = await api.get(API_ROUTES.DASHBOARD.OVERVIEW);
-    console.log("Fetch Dashboard Overview API Response:", data);
 
-    if (data?.success) {
-      // toast.success(data?.message);
-      console.log("Fetch Dashboard Overview Success:", data?.message);
-    } else {
+    if (!data?.success) {
       toast.warn(data?.message || "Fetch dashboard overview with warning");
       console.warn(
         "Fetch Dashboard Overview Warning:",
@@ -113,12 +96,8 @@ export const fetchIncomeOverview = async (range = "monthly") => {
     const { data } = await api.get(API_ROUTES.INCOME.OVERVIEW, {
       params: { range },
     });
-    console.log("Fetch Income Overview API Response:", data);
 
-    if (data?.success) {
-      // toast.success(data?.message);
-      console.log("Fetch income overview Success:", data?.message);
-    } else {
+    if (!data?.success) {
       toast.warn(data?.message || "Fetch income overview with warning");
       console.warn(
         "Fetch Income Overview Warning:",
@@ -136,13 +115,16 @@ export const fetchIncomeOverview = async (range = "monthly") => {
 };
 
 /* -------- Download Income Data -------- */
-export const downloadIncomeData = async (counter = 0) => {
+export const downloadIncomeData = async ({
+  counter = 0,
+  filter = "all",
+  range = "monthly",
+} = {}) => {
   try {
     const response = await api.get(API_ROUTES.INCOME.DOWNLOAD, {
-      params: { counter },
+      params: { counter, filter, range },
       responseType: "blob",
     });
-    console.log("Download Income Data API Response:", response);
 
     return response;
   } catch (error) {
@@ -159,12 +141,8 @@ export const fetchExpenseOverview = async (range = "monthly") => {
     const { data } = await api.get(API_ROUTES.EXPENSE.OVERVIEW, {
       params: { range },
     });
-    console.log("Fetch Expense Overview API Response:", data);
 
-    if (data?.success) {
-      // toast.success(data?.message);
-      console.log("Fetch Expense overview Success:", data?.message);
-    } else {
+    if (!data?.success) {
       toast.warn(data?.message || "Fetch expense overview with warning");
       console.warn(
         "Fetch Expense Overview Warning:",
@@ -182,13 +160,16 @@ export const fetchExpenseOverview = async (range = "monthly") => {
 };
 
 /* -------- Download Expense Data -------- */
-export const downloadExpenseData = async (counter = 0) => {
+export const downloadExpenseData = async ({
+  counter = 0,
+  filter = "all",
+  range = "monthly",
+} = {}) => {
   try {
     const response = await api.get(API_ROUTES.INCOME.DOWNLOAD, {
-      params: { counter },
+      params: { counter, filter, range },
       responseType: "blob",
     });
-    console.log("Download Expense Data API Response:", response);
 
     return response;
   } catch (error) {

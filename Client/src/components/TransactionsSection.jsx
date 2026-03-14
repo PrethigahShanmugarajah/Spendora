@@ -1,7 +1,7 @@
-// Client / src / components / TransactionsSection.jsx
 import { Banknote, Eye, Plus } from "lucide-react";
 import TransactionItem from "./TransactionItem";
 import FilterSection from "./FilterSection";
+import { BarLoader, BeatLoader } from "react-spinners";
 
 const STYLE_MAP = {
   default: {
@@ -57,6 +57,7 @@ const TransactionsSection = ({
   handleEditTransaction,
   handleDeleteTransaction,
   loading,
+  actionLoading = false,
   setEditingId,
   setShowModal,
   categoryIcons = {},
@@ -72,9 +73,13 @@ const TransactionsSection = ({
         <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-5 flex items-center gap-2 md:gap-3">
           <Banknote className={`w-5 h-5 md:w-6 md:h-6 ${styles.iconText}`} />
           {title}
-          <span className="text-sm text-gray-500 font-normal">
-            {" "}
-            ({timeFrameRange.label})
+
+          <span className="text-sm text-gray-500 font-normal flex items-center">
+            {loading ? (
+              <BeatLoader size={6} color={styles.loaderColor} />
+            ) : (
+              `(${timeFrameRange.label})`
+            )}
           </span>
         </h3>
 
@@ -90,36 +95,11 @@ const TransactionsSection = ({
       </div>
 
       <div className="space-y-3 -mx-3 lg:mx-0 md:mx-0">
-        {filteredTransactions
-          .slice(0, showAll ? filteredTransactions.length : 8)
-          .map((transaction) => (
-            <TransactionItem
-              key={transaction.id}
-              transaction={transaction}
-              isEditing={editingId === transaction.id}
-              editForm={editForm}
-              setEditForm={setEditForm}
-              onSave={handleEditTransaction}
-              onCancel={() => setEditingId(null)}
-              onDelete={handleDeleteTransaction}
-              loading={loading}
-              type={type === "default" ? "expense" : type}
-              categoryIcons={categoryIcons}
-              setEditingId={setEditingId}
-            />
-          ))}
-
-        {!showAll && filteredTransactions.length > 8 && (
-          <button
-            onClick={() => setShowAll(true)}
-            className={`mt-4 w-full text-center py-3 font-medium rounded-xl transition-colors flex items-center justify-center gap-2 ${styles.viewAllText} ${styles.viewAllHover}`}
-          >
-            <Eye size={18} /> View All {filteredTransactions.length}{" "}
-            Transactions
-          </button>
-        )}
-
-        {filteredTransactions.length === 0 && (
+        {loading ? (
+          <div className="flex justify-center py-10">
+            <BarLoader width={220} height={6} color={styles.loaderColor} />
+          </div>
+        ) : filteredTransactions.length === 0 ? (
           <div className="text-center py-6 md:py-8">
             <div
               className={`w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-full flex items-center justify-center ${styles.emptyBg}`}
@@ -144,6 +124,37 @@ const TransactionsSection = ({
               <Plus size={16} className="md:size-5" /> {addButtonText}
             </button>
           </div>
+        ) : (
+          <>
+            {filteredTransactions
+              .slice(0, showAll ? filteredTransactions.length : 8)
+              .map((transaction) => (
+                <TransactionItem
+                  key={transaction.id}
+                  transaction={transaction}
+                  isEditing={editingId === transaction.id}
+                  editForm={editForm}
+                  setEditForm={setEditForm}
+                  onSave={handleEditTransaction}
+                  onCancel={() => setEditingId(null)}
+                  onDelete={handleDeleteTransaction}
+                  loading={actionLoading}
+                  type={type === "default" ? "expense" : type}
+                  categoryIcons={categoryIcons}
+                  setEditingId={setEditingId}
+                />
+              ))}
+
+            {!showAll && filteredTransactions.length > 8 && (
+              <button
+                onClick={() => setShowAll(true)}
+                className={`mt-4 w-full text-center py-3 font-medium rounded-xl transition-colors flex items-center justify-center gap-2 ${styles.viewAllText} ${styles.viewAllHover}`}
+              >
+                <Eye size={18} /> View All {filteredTransactions.length}{" "}
+                Transactions
+              </button>
+            )}
+          </>
         )}
       </div>
     </div>

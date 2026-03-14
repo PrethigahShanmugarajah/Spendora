@@ -1,4 +1,3 @@
-// Client / src / pages / Profile / Components / PasswordChangePopup.jsx
 import { Eye, EyeOff, X } from "lucide-react";
 import { ClipLoader } from "react-spinners";
 import { InputField } from "../../../components/FormField/InputField";

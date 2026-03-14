@@ -1,10 +1,11 @@
-// Client / src / pages / Expense / View / Expense.jsx
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useOutletContext } from "react-router-dom";
 import {
   exportToExcel,
   generateChartPoints,
+  getFilteredTransactions,
   getTimeFrameRange,
+  getTimeFrameTransactions,
 } from "../../../utils/helpers";
 import AddTransactionModal from "../../../components/AddTransactionModal";
 import { toast } from "react-toastify";
@@ -13,9 +14,7 @@ import {
   buildExpenseExportData,
   calculateAverageExpense,
   calculateTotalExpense,
-  getFilteredTransactions,
   getExpenseTransactions,
-  getTimeFrameTransactions,
 } from "../../../utils/expenseUtils";
 import {
   addExpenseTransactionApi,
@@ -31,9 +30,9 @@ import {
   EXPENSE_COLORS,
 } from "../../../constants/theme";
 import OverviewHeader from "../../../components/OverviewHeader";
-import SummaryCards from "../../../components/SummaryCards";
 import { TrendingDown } from "lucide-react";
 import TransactionsSection from "../../../components/TransactionsSection";
+import OverviewSummaryCards from "../../../components/OverviewSummaryCards";
 
 const Expense = () => {
   const {
@@ -61,12 +60,12 @@ const Expense = () => {
     description: "",
     amount: "",
     type: "expense",
-    category: "Salary",
+    category: "Groceries",
   });
   const [editForm, setEditForm] = useState({
     description: "",
     amount: "",
-    category: "Salary",
+    category: "Groceries",
     date: new Date().toISOString().split("T")[0],
   });
   const [deletePopup, setDeletePopup] = useState({
@@ -74,6 +73,7 @@ const Expense = () => {
     id: null,
     item: "",
   });
+  const [overviewLoading, setOverviewLoading] = useState(false);
 
   const timeFrameRange = useMemo(
     () => getTimeFrameRange(timeFrame, null),
@@ -108,6 +108,7 @@ const Expense = () => {
 
   const fetchExpenseOverviewService = useCallback(
     async (range = timeFrame ?? "monthly") => {
+      setOverviewLoading(true);
       try {
         const overviewData = await fetchExpenseOverviewApi(range);
         if (overviewData) {
@@ -115,6 +116,8 @@ const Expense = () => {
         }
       } catch (error) {
         //
+      } finally {
+        setOverviewLoading(false);
       }
     },
     [timeFrame],
@@ -156,7 +159,7 @@ const Expense = () => {
         description: "",
         amount: "",
         type: "expense",
-        category: "Salary",
+        category: "Groceries",
       });
       setShowModal(false);
     } catch (error) {
@@ -194,12 +197,11 @@ const Expense = () => {
     timeFrame,
   ]);
 
-  const openDeletePopup = useCallback((id, item = "this expense") => {
-    if (!id) return;
+  const handleOpenDeletePopup = useCallback((transaction) => {
     setDeletePopup({
       open: true,
-      id,
-      item,
+      id: transaction.id,
+      item: transaction.description || "this expense",
     });
   }, []);
 
@@ -231,16 +233,30 @@ const Expense = () => {
   const handleExport = useCallback(async () => {
     try {
       setExportLoading(true);
-      const res = await downloadExpenseDataApi(0);
+
+      const res = await downloadExpenseDataApi({
+        counter: 0,
+        filter,
+        range: timeFrame,
+      });
+
       const blob = new Blob([res.data], {
         type: res.headers["content-type"] || "application/octet-stream",
       });
-      const disposition = res.headers["content-disposition"];
+
+      const disposition =
+        res.headers["content-disposition"] ||
+        res.headers["Content-Disposition"];
       let filename = "Expense_Details.xlsx";
 
       if (disposition) {
-        const match = disposition.match(/filename="?(.+)"?/);
-        if (match && match[1]) filename = match[1];
+        const match =
+          disposition.match(/filename="([^"]+)"/) ||
+          disposition.match(/filename=([^;]+)/);
+
+        if (match && (match[1] || match[2])) {
+          filename = (match[1] || match[2]).trim();
+        }
       }
 
       const link = document.createElement("a");
@@ -249,12 +265,13 @@ const Expense = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(link.href);
     } catch (error) {
       try {
         const exportData = buildExpenseExportData(filteredTransactions);
         exportToExcel(
           exportData,
-          `expense_${new Date().toISOString().slice(0, 10)}`,
+          `expense_${filter}_${new Date().toISOString().slice(0, 10)}`,
         );
       } catch (error) {
         console.error("The fallback export operation failed:", error);
@@ -265,7 +282,7 @@ const Expense = () => {
     } finally {
       setExportLoading(false);
     }
-  }, [filteredTransactions]);
+  }, [filteredTransactions, filter, timeFrame]);
 
   return (
     <div className="space-y-4 md:space-y-6 p-3 md:p-4 max-w-7xl mx-auto">
@@ -284,7 +301,7 @@ const Expense = () => {
         timeFrameColor="amber"
       />
 
-      <SummaryCards
+      <OverviewSummaryCards
         totalValue={totalExpense}
         averageValue={averageExpense}
         transactionsCount={transactionsCount}
@@ -292,6 +309,7 @@ const Expense = () => {
         filter={filter}
         type="expense"
         TrendIcon={TrendingDown}
+        loading={overviewLoading}
       />
 
       <TrendChart
@@ -304,6 +322,7 @@ const Expense = () => {
         colors={EXPENSE_COLORS}
         iconColor="text-amber-500"
         referenceLineColor="#F59E0B"
+        loading={overviewLoading}
       />
 
       <TransactionsSection
@@ -333,8 +352,9 @@ const Expense = () => {
         editForm={editForm}
         setEditForm={setEditForm}
         handleEditTransaction={handleEditTransaction}
-        handleDeleteTransaction={handleDeleteTransaction}
-        loading={loading}
+        handleDeleteTransaction={handleOpenDeletePopup}
+        loading={overviewLoading}
+        actionLoading={loading}
         setEditingId={setEditingId}
         setShowModal={setShowModal}
         categoryIcons={EXPENSE_CATEGORY_ICONS}
