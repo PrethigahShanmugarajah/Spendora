@@ -35,7 +35,7 @@ import {
 } from "../Service/DashboardService";
 import DashboardHeader from "../Components/DashboardHeader";
 import DashboardSummaryCards from "../Components/DashboardSummaryCards";
-import GaugeCard from "../../../components/GaugeCard";
+import GaugeCard from "../Components/GaugeCard";
 import TransactionSection from "../Components/TransactionSection";
 import AddTransactionModal from "../../../components/AddTransactionModal";
 import DistributionChart from "../Components/DistributionChart";
