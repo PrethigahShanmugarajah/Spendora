@@ -6,6 +6,7 @@ const API_ROUTES = {
     PROFILE: `${BASE_URL}/api/user/profile`,
     LOGIN: `${BASE_URL}/api/user/login`,
     REGISTER: `${BASE_URL}/api/user/register`,
+    PASSWORD: `${BASE_URL}/api/user/password`,
   },
   INCOME: {
     GET: `${BASE_URL}/api/income/get`,
