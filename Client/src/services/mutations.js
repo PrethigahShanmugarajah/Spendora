@@ -210,3 +210,55 @@ export const userSignup = async (payload) => {
     throw error;
   }
 };
+
+/* -------- Update Profile -------- */
+export const updateProfile = async (profileData) => {
+  try {
+    const { data } = await api.put(API_ROUTES.USER.PROFILE, profileData);
+    console.log("Update Profile API Response:", data);
+
+    if (data?.success) {
+      toast.success(data?.message);
+      console.log("Update Profile Success:", data?.message);
+    } else {
+      toast.warn(data?.message || "Update profile with warning");
+      console.warn(
+        "Update Profile Warning:",
+        data?.message || "Update Profile warning",
+      );
+    }
+
+    return data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error?.message);
+    console.error("Update Profile Error:", error);
+
+    throw error;
+  }
+};
+
+/* -------- Change Password -------- */
+export const changePassword = async (passwordData) => {
+  try {
+    const { data } = await api.put(API_ROUTES.USER.PASSWORD, passwordData);
+    console.log("Change Password API Response:", data);
+
+    if (data?.success) {
+      toast.success(data?.message);
+      console.log("Change Password Success:", data?.message);
+    } else {
+      toast.warn(data?.message || "Change password with warning");
+      console.warn(
+        "Change Password Warning:",
+        data?.message || "Change Password warning",
+      );
+    }
+
+    return data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error?.message);
+    console.error("Change Password Error:", error);
+
+    throw error;
+  }
+};
