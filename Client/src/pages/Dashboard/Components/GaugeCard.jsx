@@ -1,11 +1,11 @@
-// Client / src / components / GaugeCard.jsx
+// Client / src / pages / Dashboard / Components / GaugeCard.jsx
 import {
   ResponsiveContainer,
   RadialBarChart,
   RadialBar,
   PolarAngleAxis,
 } from "recharts";
-import { CURRENCY } from "../utils/helpers";
+import { CURRENCY } from "../../../utils/helpers";
 
 const GaugeCard = ({
   gauge = {},
@@ -27,7 +27,7 @@ const GaugeCard = ({
   const gradientEnd = isNegative
     ? "#E11d48"
     : colorInfo.gradientEnd || "#4F46E5";
-    
+
   const textColor = isNegative
     ? "text-rose-600"
     : colorInfo.text || "text-gray-800";
